@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ViewModelLayer.Models.User
 {
-    class UserSessionModel : BaseUserModel
+    public class UserSessionModel : BaseUserModel
     {
 
         public string Role { get; set; }

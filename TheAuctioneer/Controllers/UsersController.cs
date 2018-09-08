@@ -4,13 +4,15 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BusinessLogicLayer.Repositories;
+using TheAuctioneer.Attributes;
 using ViewModelLayer.Models.User;
 
 namespace TheAuctioneer.Controllers
 {
+    [AuthorizeUser(RolesAllowed = "User")]
     public class UsersController : Controller
     {
-        private readonly UserBl _userBl = new UserBl();
+        private readonly AccountBl _userBl = new AccountBl();
         // GET: Users
         public ActionResult Index()
         {
@@ -26,40 +28,8 @@ namespace TheAuctioneer.Controllers
         }
 
         // GET: Users/Register
-        public ActionResult Register()
-        {
-            return View();
-        }
-
-        // POST: Users/Register
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Register(CreateUserModel model)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    int retVal = _userBl.CreateUser(model);
-                    switch (retVal)
-                    {
-                        case 0:
-                            return RedirectToAction("Index");
-                        case -1:
-                            ModelState.AddModelError("Username", "Specified username is already taken.");
-                            return View();
-                        case -2:
-                            ModelState.AddModelError("Email", "Specified email address already exists in the system.");
-                            return View();
-                    }
-                }
-                return View();
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        [AllowAnonymous]
+        
 
         // GET: Users/Login
         public ActionResult Login()

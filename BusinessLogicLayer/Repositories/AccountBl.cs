@@ -8,14 +8,16 @@ using ViewModelLayer.Models.User;
 
 namespace BusinessLogicLayer.Repositories
 {
-    public class UserBl
+    public class AccountBl
     {
         private readonly UserRepository _userRepository = new UserRepository();
 
+        private readonly RoleRepository _roleRepository = new RoleRepository();
+
         public List<DisplayUserModel> DisplayUsers()
         {
-            List<User> users = _userRepository.GetAll().ToList();
-            List<DisplayUserModel> models = new List<DisplayUserModel>();
+            var users = _userRepository.GetAll().ToList();
+            var models = new List<DisplayUserModel>();
             foreach (var user in users)
             {
                 models.Add(InitDisplayUserModel(user));
@@ -26,9 +28,24 @@ namespace BusinessLogicLayer.Repositories
 
         public DisplayUserModel DisplayUserDetails(int id)
         {
-            User user = _userRepository.GetById(id);
+            var user = _userRepository.GetById(id);
 
             return InitDisplayUserModel(user);
+        }
+
+        public UserSessionModel CreateSessionModel(LoginUserModel model)
+        {
+            var user = _userRepository.SearchByUsername(model.Username);
+            return new UserSessionModel
+            {
+                Id = user.Id,
+                Firstname = user.Name,
+                Lastname = user.Surname,
+                Gender = user.Gender,
+                Email = user.Email,
+                Username = user.Username,
+                Role = user.Role.Type
+            };
         }
 
         public int CreateUser(CreateUserModel model)
@@ -52,8 +69,8 @@ namespace BusinessLogicLayer.Repositories
                 Gender = model.Gender,
                 Email = model.Email,
                 Username = model.Username,
-                RoleId = 1,
-                TokenCount = 9999
+                RoleId = _roleRepository.GetByType("User").Id,
+                TokenCount = 0
             };
             byte[] salt;
             new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
