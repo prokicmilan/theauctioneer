@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using BusinessLogicLayer.Repositories;
 using TheAuctioneer.Attributes;
+using TheAuctioneer.Principals;
 using ViewModelLayer.Models.User;
 
 namespace TheAuctioneer.Controllers
@@ -25,46 +26,12 @@ namespace TheAuctioneer.Controllers
         // GET: Users/Details/5
         public ActionResult Details(int id)
         {
-            if (((UserSessionModel) Session["UserSession"]).Id != id)
+            if (((UserPrincipal)HttpContext.User).Id() != id)
             {
                 return RedirectToAction("Unauthorized", "Account");
             }
             var model = _userBl.DisplayUserDetails(id);
             return View(model);
-        }
-
-        // GET: Users/Register
-        [AllowAnonymous]
-        
-
-        // GET: Users/Login
-        public ActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginUserModel model)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    if (_userBl.CheckCredentials(model.Username, model.Password))
-                    {
-                        return RedirectToAction("Index");
-                    }
-                    ViewBag.ErrorMessage = "Credentials invalid.";
-                    return View();
-                }
-
-                return View();
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         // GET: Users/Edit/5

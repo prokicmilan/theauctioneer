@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using BusinessLogicLayer.Repositories;
 using TheAuctioneer.Attributes;
+using TheAuctioneer.Principals;
 using ViewModelLayer.Models.User;
 
 namespace TheAuctioneer.Controllers
@@ -20,7 +19,7 @@ namespace TheAuctioneer.Controllers
         [Route]
         public ActionResult Index(string returnUrl = "")
         {
-            if (Session["UserSession"] == null)
+            if (!HttpContext.User.Identity.IsAuthenticated)
             {
                 if (returnUrl.Length != 0)
                 {
@@ -45,19 +44,21 @@ namespace TheAuctioneer.Controllers
                     if (_accountBl.CheckCredentials(model.Username, model.Password))
                     {
                         var sessionModel = _accountBl.CreateSessionModel(model);
-                        Session["UserSession"] = sessionModel;
+                        //Session["UserSession"] = sessionModel;
+                        HttpContext.User = new UserPrincipal(sessionModel);
                         // TODO: cookie?
+                        FormsAuthentication.SetAuthCookie(sessionModel.Username, model.RememberMe);
                         var authTicket = new FormsAuthenticationTicket(
                                 1,
-                                sessionModel.Id.ToString(),
+                                sessionModel.Username,
                                 DateTime.Now,
-                                DateTime.Now.AddMinutes(1),
+                                DateTime.Now.AddMinutes(60),
                                 model.RememberMe,
-                                sessionModel.Role,
-                                "/"
+                                sessionModel.Role
                             );
-                        HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket));
-                        Response.Cookies.Add(cookie);
+                        string encryptedTicket = FormsAuthentication.Encrypt(authTicket);
+                        var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
+                        HttpContext.Response.Cookies.Add(authCookie);
                         if (TempData["ReturnUrl"] != null)
                         {
                             return Redirect(TempData["ReturnUrl"] as string);
@@ -101,7 +102,19 @@ namespace TheAuctioneer.Controllers
                                 Password = ""
                             }
                             );
-                            Session["UserSession"] = sessionUser;
+                            HttpContext.User = new UserPrincipal(sessionUser);
+                            FormsAuthentication.SetAuthCookie(sessionUser.Username, false);
+                            var authTicket = new FormsAuthenticationTicket(
+                                1,
+                                sessionUser.Username,
+                                DateTime.Now,
+                                DateTime.Now.AddMinutes(60),
+                                false,
+                                sessionUser.Role
+                            );
+                            string encryptedTicket = FormsAuthentication.Encrypt(authTicket);
+                            var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
+                            HttpContext.Response.Cookies.Add(authCookie);
                             return RedirectToAction("Index", "Users");
                         case -1:
                             ModelState.AddModelError("Username", "Specified username is already taken.");
@@ -119,14 +132,15 @@ namespace TheAuctioneer.Controllers
             }
         }
 
+        // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AuthorizeUser]
         public ActionResult LogOff()
         {
-            Session["UserSession"] = null;
-
-            //TODO: invalidacija cookiea?
+            //Session["UserSession"] = null;
+            Session.Abandon();
+            FormsAuthentication.SignOut();
             return RedirectToAction("Index");
         }
 

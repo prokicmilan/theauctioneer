@@ -17,15 +17,15 @@ namespace TheAuctioneer.Attributes
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            var sessionUser = httpContext.Session["UserSession"];
-            if (sessionUser == null)
+            var sessionUser = httpContext.User;
+            if (!sessionUser.Identity.IsAuthenticated)
             {
                 return false;
             }
 
             if (RolesAllowed != null)
             {
-                return RolesAllowed.Contains(((UserSessionModel) sessionUser).Role) || ((UserSessionModel) sessionUser).Role.Equals("Admin");
+                return sessionUser.IsInRole(RolesAllowed);
             }
 
             return true;
@@ -33,7 +33,7 @@ namespace TheAuctioneer.Attributes
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            if (filterContext.HttpContext.Session["UserSession"] != null)
+            if (filterContext.HttpContext.User.Identity.IsAuthenticated)
             {
                 filterContext.Result = new RedirectToRouteResult(
                         new RouteValueDictionary(
