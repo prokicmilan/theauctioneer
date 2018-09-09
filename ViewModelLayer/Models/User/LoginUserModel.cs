@@ -17,5 +17,8 @@ namespace ViewModelLayer.Models.User
         [Required(ErrorMessage = "You have to enter a password")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [DisplayName("Remember me?")]
+        public bool RememberMe { get; set; }
     }
 }

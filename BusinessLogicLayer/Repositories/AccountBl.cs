@@ -44,8 +44,9 @@ namespace BusinessLogicLayer.Repositories
                 Gender = user.Gender,
                 Email = user.Email,
                 Username = user.Username,
-                Role = user.Role.Type
+                Role = _roleRepository.GetById(user.RoleId).Type
             };
+            
         }
 
         public int CreateUser(CreateUserModel model)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using BusinessLogicLayer.Repositories;
 using TheAuctioneer.Attributes;
 using ViewModelLayer.Models.User;
@@ -17,10 +18,14 @@ namespace TheAuctioneer.Controllers
 
         // GET: Login
         [Route]
-        public ActionResult Index()
+        public ActionResult Index(string returnUrl = "")
         {
             if (Session["UserSession"] == null)
             {
+                if (returnUrl.Length != 0)
+                {
+                    TempData["ReturnUrl"] = returnUrl;
+                }
                 return View("Login");
             }
 
@@ -42,6 +47,21 @@ namespace TheAuctioneer.Controllers
                         var sessionModel = _accountBl.CreateSessionModel(model);
                         Session["UserSession"] = sessionModel;
                         // TODO: cookie?
+                        var authTicket = new FormsAuthenticationTicket(
+                                1,
+                                sessionModel.Id.ToString(),
+                                DateTime.Now,
+                                DateTime.Now.AddMinutes(1),
+                                model.RememberMe,
+                                sessionModel.Role,
+                                "/"
+                            );
+                        HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket));
+                        Response.Cookies.Add(cookie);
+                        if (TempData["ReturnUrl"] != null)
+                        {
+                            return Redirect(TempData["ReturnUrl"] as string);
+                        }
                         return RedirectToAction("Index", "Users");
                     }
 
@@ -75,7 +95,14 @@ namespace TheAuctioneer.Controllers
                     switch (retVal)
                     {
                         case 0:
-                            return RedirectToAction("Index");
+                            var sessionUser = _accountBl.CreateSessionModel(new LoginUserModel
+                            {
+                                Username = model.Username,
+                                Password = ""
+                            }
+                            );
+                            Session["UserSession"] = sessionUser;
+                            return RedirectToAction("Index", "Users");
                         case -1:
                             ModelState.AddModelError("Username", "Specified username is already taken.");
                             return View();
@@ -101,6 +128,13 @@ namespace TheAuctioneer.Controllers
 
             //TODO: invalidacija cookiea?
             return RedirectToAction("Index");
+        }
+
+        // GET: /Account/Unauthorized
+        public ActionResult Unauthorized()
+        {
+            TempData["ErrorMessage"] = "You are not authorized to perform that action.";
+            return RedirectToAction("Index", "Users");
         }
 
     }

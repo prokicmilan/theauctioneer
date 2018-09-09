@@ -51,9 +51,10 @@ namespace TheAuctioneer.Attributes
                         new RouteValueDictionary(
                             new
                             {
-                                controller = "Account",
-                                action = "Index"
-                            }    
+                                controller = "Login",
+                                action = "Index",
+                                returnUrl = filterContext.HttpContext.Request.Url.GetComponents(UriComponents.PathAndQuery, UriFormat.SafeUnescaped)
+                            }
                         )
                     );
             }

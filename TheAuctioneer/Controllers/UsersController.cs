@@ -9,13 +9,15 @@ using ViewModelLayer.Models.User;
 
 namespace TheAuctioneer.Controllers
 {
-    [AuthorizeUser(RolesAllowed = "User")]
+    [AuthorizeUser]
     public class UsersController : Controller
     {
         private readonly AccountBl _userBl = new AccountBl();
+
         // GET: Users
         public ActionResult Index()
         {
+            ViewBag.ErrorMessage = TempData["ErrorMessage"];
             var models = _userBl.DisplayUsers();
             return View(models);
         }
@@ -23,6 +25,10 @@ namespace TheAuctioneer.Controllers
         // GET: Users/Details/5
         public ActionResult Details(int id)
         {
+            if (((UserSessionModel) Session["UserSession"]).Id != id)
+            {
+                return RedirectToAction("Unauthorized", "Account");
+            }
             var model = _userBl.DisplayUserDetails(id);
             return View(model);
         }
