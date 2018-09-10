@@ -144,6 +144,69 @@ namespace TheAuctioneer.Controllers
             return RedirectToAction("Index");
         }
 
+        // GET: /Account/Edit/5
+        [AuthorizeSelf]
+        public ActionResult Edit(int id)
+        {
+            var model = _accountBl.DisplayUserDetails(id);
+            return View(model);
+        }
+
+        // POST: Account/Edit/5
+        [HttpPost]
+        [AuthorizeSelf]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(DisplayUserModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _accountBl.ChangeUserDetails(model);
+                    return RedirectToAction("Index", "Users");
+                }
+
+                return View();
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [AuthorizeSelf]
+        // GET: Account/ChangePassword/5
+        public ActionResult ChangePassword(int id)
+        {
+            return View();
+        }
+
+        // POST: Account/ChangePassword/5
+        [HttpPost]
+        [AuthorizeSelf]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangePassword(PasswordChangeUserModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (_accountBl.ChangePassword(model))
+                    {
+                        return RedirectToAction("Index", "Users");
+                    }
+                    ModelState.AddModelError("OldPassword", "Password is invalid.");
+                    return View();
+                }
+
+                return View();
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
         // GET: /Account/Unauthorized
         public ActionResult Unauthorized()
         {

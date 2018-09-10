@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
+using TheAuctioneer.Principals;
+using ViewModelLayer.Models.User;
+
+namespace TheAuctioneer.Attributes
+{
+    public class AuthorizeSelf : AuthorizeAttribute
+    {
+
+        protected override bool AuthorizeCore(HttpContextBase httpContext)
+        {
+            var sessionUser = httpContext.User as UserPrincipal;
+            if (sessionUser == null) return false;
+            var requestPath = httpContext.Request.Path;
+            var substrStart = requestPath.LastIndexOf('/') + 1;
+            var substrLen = requestPath.Length - substrStart;
+            if (substrLen == 0) substrLen++;
+            var requestId = Convert.ToInt32(requestPath.Substring(substrStart, substrLen));
+            // odvratno budzenje ali zivot je tezak, mozda niko ne procita ovo :(
+            return sessionUser.Identity.IsAuthenticated && (sessionUser.Id() == requestId || sessionUser.IsInRole("Admin"));
+        }
+
+        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        {
+            if (filterContext.HttpContext.User.Identity.IsAuthenticated)
+            {
+                filterContext.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary(
+                        new
+                        {
+                            controller = "Account",
+                            action = "Unauthorized"
+                        }
+                    )
+                );
+            }
+            else
+            {
+                filterContext.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary(
+                        new
+                        {
+                            controller = "Login",
+                            action = "Index",
+                            returnUrl = filterContext.HttpContext.Request.Url.GetComponents(UriComponents.PathAndQuery, UriFormat.SafeUnescaped)
+                        }
+                    )
+                );
+            }
+        }
+    }
+}

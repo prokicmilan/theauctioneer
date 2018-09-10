@@ -38,7 +38,6 @@ namespace TheAuctioneer
                         Username = authTicket.Name,
                         Password = ""
                     });
-                    //HttpContext.Current.User = new GenericPrincipal(new FormsIdentity(authTicket), new string[] {sessionModel.Role});
                     HttpContext.Current.User = new UserPrincipal(sessionModel);
                 }
             }

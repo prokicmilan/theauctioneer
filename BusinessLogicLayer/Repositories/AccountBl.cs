@@ -93,6 +93,48 @@ namespace BusinessLogicLayer.Repositories
             return false;
         }
 
+        public void ChangeUserDetails(DisplayUserModel model)
+        {
+            var user = _userRepository.GetById(model.Id);
+            bool changed = false;
+            if (!user.Name.Equals(model.Firstname))
+            {
+                user.Name = model.Firstname;
+                changed = true;
+            }
+
+            if (!user.Surname.Equals(model.Lastname))
+            {
+                user.Surname = model.Lastname;
+                changed = true;
+            }
+
+            if (!user.Email.Equals(model.Email))
+            {
+                user.Email = model.Email;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                _userRepository.Save(user);
+            }
+        }
+
+        public bool ChangePassword(PasswordChangeUserModel model)
+        {
+            var user = _userRepository.GetById(model.Id);
+            if (user == null) return false;
+            if (!CheckCredentials(user.Username, model.OldPassword)) return false;
+            byte[] salt;
+            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
+            var hashedPassword = HashThePassword(model.NewPassword, salt);
+            user.Password = hashedPassword;
+            _userRepository.Save(user);
+            return true;
+
+        }
+
         private DisplayUserModel InitDisplayUserModel(User user)
         {
             var model = new DisplayUserModel

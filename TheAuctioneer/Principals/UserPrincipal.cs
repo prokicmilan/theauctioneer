@@ -34,6 +34,5 @@ namespace TheAuctioneer.Principals
         {
             return _sessionModel.Username;
         }
-
     }
 }
