@@ -11,12 +11,46 @@ namespace DataAccessLayer.Repositories
 
         public IQueryable<Auction> GetAllReady()
         {
-            return _context.Auction.Where(auction => auction.StatusId == 1);
+            /*
+             * select
+             *      Auction.*
+             * from
+             *      Auction
+             * join
+             *      AuctionStatus
+             * on
+             *      AuctionStatus.Id = Auction.StatusId
+             * where
+             *      AuctionStatus.[Type] = 'READY'
+             */
+            return _context.Auction.Join(_context.AuctionStatus,                                                      // tabela za spajanje
+                                                auction => auction.StatusId,                                          // strani kljuc
+                                                status => status.Id,                                                  // primarni kljuc
+                                                (auction, status) => new {Auction = auction, AuctionStatus = status}) // agregacija
+                                         .Where(status => status.AuctionStatus.Type.Equals("READY"))                  // where
+                                         .Select(auction => auction.Auction);                                         // select
         }
 
         public IQueryable<Auction> GetAllStarted()
         {
-            return _context.Auction.Where(auction => auction.StatusId == 2);
+            /*
+             * select
+             *      Auction.*
+             * from
+             *      Auction
+             * join
+             *      AuctionStatus
+             * on
+             *      AuctionStatus.Id = Auction.StatusId
+             * where
+             *      AuctionStatus.[Type] = 'OPENED'
+             */
+            return _context.Auction.Join(_context.AuctionStatus,
+                                         auction => auction.StatusId,
+                                         status => status.Id,
+                                         (auction, status) => new { Auction = auction, AuctionStatus = status })
+                                   .Where(status => status.AuctionStatus.Type.Equals("OPENED"))
+                                   .Select(auction => auction.Auction);
         }
 
     }
