@@ -22,6 +22,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="Description" Type="nvarchar" MaxLength="512" Nullable="false" />
         </EntityType>
         <EntityType Name="Bid">
@@ -203,6 +204,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="String" MaxLength="512" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Auction" Relationship="Self.FK_Auction_AuctionStatus" FromRole="AuctionStatus" ToRole="Auction" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Bid">
           <Key>
@@ -389,6 +391,7 @@
           <EntitySetMapping Name="AuctionStatus">
             <EntityTypeMapping TypeName="TheAuctioneerModel.AuctionStatus">
               <MappingFragment StoreEntitySet="AuctionStatus">
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
               </MappingFragment>

@@ -28,9 +28,7 @@ namespace BusinessLogicLayer.Repositories
 
         public DisplayUserModel DisplayUserDetails(int id)
         {
-            var user = _userRepository.GetById(id);
-
-            return InitDisplayUserModel(user);
+            return InitDisplayUserModel(_userRepository.GetById(id));
         }
 
         public UserSessionModel CreateSessionModel(LoginUserModel model)

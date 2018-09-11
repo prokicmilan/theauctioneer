@@ -196,6 +196,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Attributes\AuthorizeSelf.cs" />
     <Compile Include="Attributes\AuthorizeUser.cs" />
+    <Compile Include="Controllers\AuctionsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -267,6 +268,12 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Auctions\ShowReady.cshtml" />
+    <Content Include="Views\Auctions\Details.cshtml" />
+    <Content Include="Views\Auctions\Delete.cshtml" />
+    <Content Include="Views\Auctions\Start.cshtml" />
+    <Content Include="Views\Auctions\Index.cshtml" />
+    <Content Include="Views\Auctions\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

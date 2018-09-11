@@ -63,6 +63,8 @@
     <Compile Include="Interfaces\IEditableRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AuctionRepository.cs" />
+    <Compile Include="Repositories\AuctionStatusRepository.cs" />
     <Compile Include="Repositories\EditableRepositoryBase.cs" />
     <Compile Include="Repositories\ReadOnlyRepositoryBase.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
