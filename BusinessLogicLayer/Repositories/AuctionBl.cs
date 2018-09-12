@@ -16,7 +16,8 @@ namespace BusinessLogicLayer.Repositories
         private readonly AuctionRepository _auctionRepository = new AuctionRepository();
 
         private readonly AuctionStatusRepository _auctionStatusRepository = new AuctionStatusRepository();
-
+    
+        private readonly BidRepository _bidRepository = new BidRepository();
 
         public List<DisplayAuctionModel> GetAllReady()
         {
@@ -77,6 +78,34 @@ namespace BusinessLogicLayer.Repositories
             var auction = _auctionRepository.GetById(model.Id);
             auction.StatusId = _auctionStatusRepository.GetByType("OPENED").Id;
             _auctionRepository.Save(auction);
+        }
+
+        public void IncreasePrice(int auctionId, int userId)
+        {
+            var auction = _auctionRepository.GetById(auctionId);
+            var bid = new Bid
+            {
+                UserId = userId,
+                AuctionId = auctionId,
+                Timestamp = DateTime.Now,
+                BidAmount = auction.Price + 1
+            };
+            auction.Price++;
+            _bidRepository.Save(bid);
+            _auctionRepository.Save(auction);
+        }
+
+        public List<DisplayAuctionModel> GetAllWonByUser(int userId)
+        {
+            var auctions = _auctionRepository.GetAllWonByUser(userId);
+            var models = new List<DisplayAuctionModel>();
+            foreach (var auction in auctions)
+            {
+                var model = InitDisplayAuctionModel(auction);
+                models.Add(model);
+            }
+
+            return models;
         }
 
         private DisplayAuctionModel InitDisplayAuctionModel(Auction auction)

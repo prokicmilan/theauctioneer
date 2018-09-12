@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using BusinessLogicLayer.Repositories;
 using TheAuctioneer.Attributes;
+using TheAuctioneer.Principals;
 using ViewModelLayer.Models.Auction;
 
 namespace TheAuctioneer.Controllers
@@ -98,6 +99,19 @@ namespace TheAuctioneer.Controllers
         {
             _auctionBl.StartAuction(model);
             return RedirectToAction("ShowReady");
+        }
+
+        [HttpPost]
+        public ActionResult Bid(int id)
+        {
+            _auctionBl.IncreasePrice(id, ((UserPrincipal) HttpContext.User).Id());
+            return Redirect(Request.UrlReferrer.ToString());
+        }
+
+        public ActionResult ListWon()
+        {
+            var models = _auctionBl.GetAllWonByUser(((UserPrincipal) HttpContext.User).Id());
+            return View("ShowReady", models);
         }
     }
 }

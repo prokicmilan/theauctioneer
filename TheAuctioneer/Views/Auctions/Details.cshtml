@@ -38,7 +38,13 @@
         <dd>
             <img src="@Model.Image" width="100px" height="100px" />
         </dd>
-
+        @using (Html.BeginForm("Bid", "Auctions", FormMethod.Post))
+        {
+            <div class="form-actions no-color">
+                @Html.Hidden("id", Model.Id)
+                <input type="submit" value="Bid now!" class="btn btn-default" style="margin: auto; width: 100%"/>
+            </div>
+        }
     </dl>
 </div>
 <p>
