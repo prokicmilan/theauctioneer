@@ -44,7 +44,6 @@ namespace TheAuctioneer.Controllers
                     if (_accountBl.CheckCredentials(model.Username, model.Password))
                     {
                         var sessionModel = _accountBl.CreateSessionModel(model);
-                        //Session["UserSession"] = sessionModel;
                         HttpContext.User = new UserPrincipal(sessionModel);
                         // TODO: cookie?
                         FormsAuthentication.SetAuthCookie(sessionModel.Username, model.RememberMe);
@@ -63,7 +62,7 @@ namespace TheAuctioneer.Controllers
                         {
                             return Redirect(TempData["ReturnUrl"] as string);
                         }
-                        return RedirectToAction("Index", "Users");
+                        return RedirectToAction("Index", "Auctions");
                     }
 
                     ViewBag.ErrorMessage = "Invalid credentials.";

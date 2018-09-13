@@ -47,13 +47,18 @@ namespace TheAuctioneer.Attributes
             }
             else
             {
+                var returl = "";
+                if (filterContext.HttpContext.Request.HttpMethod.Equals("GET"))
+                {
+                    returl = filterContext.HttpContext.Request.Url.GetComponents(UriComponents.PathAndQuery, UriFormat.SafeUnescaped);
+                }
                 filterContext.Result = new RedirectToRouteResult(
                         new RouteValueDictionary(
                             new
                             {
                                 controller = "Login",
                                 action = "Index",
-                                returnUrl = filterContext.HttpContext.Request.Url.GetComponents(UriComponents.PathAndQuery, UriFormat.SafeUnescaped)
+                                returnUrl = returl
                             }
                         )
                     );
