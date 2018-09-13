@@ -83,7 +83,7 @@ namespace BusinessLogicLayer.Repositories
             _auctionRepository.Save(auction);
         }
 
-        public bool PostBid(int auctionId, int userId)
+        public int PostBid(int auctionId, int userId)
         {
             using (var tx = new TransactionScope())
             {
@@ -92,9 +92,14 @@ namespace BusinessLogicLayer.Repositories
                 if ((user.TokenCount - (auction.Price)) < 0)
                 {
                     tx.Dispose();
-                    return false;
+                    return -1;
                 }
                 var oldBid = _bidRepository.GetTopBidForAuction(auctionId);
+                if (oldBid != null && oldBid.UserId == userId)
+                {
+                    tx.Dispose();
+                    return -2;
+                }
                 if (oldBid != null)
                 {
                     //TODO: promeni sve vezano za tokene u int
@@ -117,7 +122,7 @@ namespace BusinessLogicLayer.Repositories
                 user.TokenCount -= (int)auction.Price;
                 _userRepository.Save(user);
                 tx.Complete();
-                return true;
+                return 0;
             }
         }
 

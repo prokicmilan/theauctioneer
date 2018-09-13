@@ -105,13 +105,19 @@ namespace TheAuctioneer.Controllers
         [HttpPost]
         public ActionResult Bid(int id)
         {
-            if (_auctionBl.PostBid(id, ((UserPrincipal) HttpContext.User).Id()))
+            var retVal = _auctionBl.PostBid(id, ((UserPrincipal) HttpContext.User).Id());
+            switch (retVal)
             {
-                return Redirect(Request.UrlReferrer.ToString());
+                case 0:
+                    return Redirect(Request.UrlReferrer.ToString());
+                case -1:
+                    TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
+                    break;
+                case -2:
+                    TempData["ErrorMessage"] = "You're already the highest bidder on that auction.";
+                    break;
             }
-            TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
             return RedirectToAction("Index");
-
         }
 
         public ActionResult ListWon()

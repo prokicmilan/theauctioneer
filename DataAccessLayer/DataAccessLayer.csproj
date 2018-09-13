@@ -60,7 +60,6 @@
     <Compile Include="Bid.cs">
       <DependentUpon>TheAuctioneerEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Classes\UserMetadata.cs" />
     <Compile Include="Interfaces\IEditableRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
