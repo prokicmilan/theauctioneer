@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using DataAccessLayer;
 using DataAccessLayer.Repositories;
 using ViewModelLayer.Models.Auction;
@@ -18,6 +19,8 @@ namespace BusinessLogicLayer.Repositories
         private readonly AuctionStatusRepository _auctionStatusRepository = new AuctionStatusRepository();
     
         private readonly BidRepository _bidRepository = new BidRepository();
+
+        private readonly UserRepository _userRepository = new UserRepository();
 
         public List<DisplayAuctionModel> GetAllReady()
         {
@@ -80,19 +83,42 @@ namespace BusinessLogicLayer.Repositories
             _auctionRepository.Save(auction);
         }
 
-        public void IncreasePrice(int auctionId, int userId)
+        public bool PostBid(int auctionId, int userId)
         {
-            var auction = _auctionRepository.GetById(auctionId);
-            var bid = new Bid
+            using (var tx = new TransactionScope())
             {
-                UserId = userId,
-                AuctionId = auctionId,
-                Timestamp = DateTime.Now,
-                BidAmount = auction.Price + 1
-            };
-            auction.Price++;
-            _bidRepository.Save(bid);
-            _auctionRepository.Save(auction);
+                var auction = _auctionRepository.GetById(auctionId);
+                var user = _userRepository.GetById(userId);
+                if ((user.TokenCount - (auction.Price)) < 0)
+                {
+                    tx.Dispose();
+                    return false;
+                }
+                var oldBid = _bidRepository.GetTopBidForAuction(auctionId);
+                if (oldBid != null)
+                {
+                    //TODO: promeni sve vezano za tokene u int
+                    var oldUser = _userRepository.GetById(oldBid.UserId);
+                    oldUser.TokenCount += (int)oldBid.BidAmount;
+                    _userRepository.Save(oldUser);
+                }
+
+                auction.Price++;
+                var bid = new Bid
+                {
+                    UserId = userId,
+                    AuctionId = auctionId,
+                    Timestamp = DateTime.Now,
+                    BidAmount = auction.Price
+                };
+                _bidRepository.Save(bid);
+                _auctionRepository.Save(auction);
+                //TODO: promeni sve vezano za tokene u int
+                user.TokenCount -= (int)auction.Price;
+                _userRepository.Save(user);
+                tx.Complete();
+                return true;
+            }
         }
 
         public List<DisplayAuctionModel> GetAllWonByUser(int userId)

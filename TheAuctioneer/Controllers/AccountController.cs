@@ -28,7 +28,7 @@ namespace TheAuctioneer.Controllers
                 return View("Login");
             }
 
-            return RedirectToAction("Index", "Users");
+            return RedirectToAction("Index", "Auctions");
         }
 
         // POST: Login
@@ -211,7 +211,7 @@ namespace TheAuctioneer.Controllers
         public ActionResult Unauthorized()
         {
             TempData["ErrorMessage"] = "You are not authorized to perform that action.";
-            return RedirectToAction("Index", "Users");
+            return RedirectToAction("Index", "Auctions");
         }
 
     }

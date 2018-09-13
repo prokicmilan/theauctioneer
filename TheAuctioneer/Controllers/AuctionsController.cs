@@ -20,6 +20,7 @@ namespace TheAuctioneer.Controllers
         public ActionResult Index()
         {
             var models = _auctionBl.GetAllStarted();
+            ViewBag.ErrorMessage = TempData["ErrorMessage"];
             return View(models);
         }
 
@@ -104,8 +105,13 @@ namespace TheAuctioneer.Controllers
         [HttpPost]
         public ActionResult Bid(int id)
         {
-            _auctionBl.IncreasePrice(id, ((UserPrincipal) HttpContext.User).Id());
-            return Redirect(Request.UrlReferrer.ToString());
+            if (_auctionBl.PostBid(id, ((UserPrincipal) HttpContext.User).Id()))
+            {
+                return Redirect(Request.UrlReferrer.ToString());
+            }
+            TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
+            return RedirectToAction("Index");
+
         }
 
         public ActionResult ListWon()
