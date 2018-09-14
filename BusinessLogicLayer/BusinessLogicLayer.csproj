@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
-      <Project>{946c5986-f124-476a-92a7-214ec30072b7}</Project>
+      <Project>{051dd449-809d-45a0-839c-779abddf4c0a}</Project>
       <Name>DataAccessLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\ViewModelLayer\ViewModelLayer.csproj">

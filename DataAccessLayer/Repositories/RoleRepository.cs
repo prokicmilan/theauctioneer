@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataAccessLayer.Classes;
 
 namespace DataAccessLayer.Repositories
 {
@@ -11,7 +12,7 @@ namespace DataAccessLayer.Repositories
 
         public Role GetByType(string type)
         {
-            return _context.Role.FirstOrDefault(role => role.Type.Equals(type));
+            return context.Roles.FirstOrDefault(role => role.Type.Equals(type));
         }
 
     }

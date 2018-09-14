@@ -4,27 +4,28 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using DataAccessLayer.Classes;
 using DataAccessLayer.Interfaces;
 
 namespace DataAccessLayer.Repositories
 {
     public class ReadOnlyRepositoryBase<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        protected readonly TheAuctioneerEntities _context = new TheAuctioneerEntities();
+        protected readonly DataModel context = new DataModel();
 
         public TEntity GetById(int id)
         {
-            return _context.Set<TEntity>().Find(id);
+            return context.Set<TEntity>().Find(id);
         }
 
         public IQueryable<TEntity> GetAll()
         {
-            return _context.Set<TEntity>();
+            return context.Set<TEntity>();
         }
 
         public IQueryable<TEntity> SearchFor(Expression<Func<TEntity, bool>> predicate)
         {
-            return _context.Set<TEntity>().Where(predicate);
+            return context.Set<TEntity>().Where(predicate);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
-using DataAccessLayer;
+using DataAccessLayer.Classes;
 using DataAccessLayer.Repositories;
 using ViewModelLayer.Models.Auction;
 
