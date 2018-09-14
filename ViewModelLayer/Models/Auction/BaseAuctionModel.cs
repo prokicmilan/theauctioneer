@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ViewModelLayer.Models.Auction
 {
@@ -18,7 +13,7 @@ namespace ViewModelLayer.Models.Auction
         public string Description { get; set; }
 
         [Required(ErrorMessage = "You must enter a starting price for the auction")]
-        public decimal Price { get; set; }
+        public int Price { get; set; }
         
     }
 }

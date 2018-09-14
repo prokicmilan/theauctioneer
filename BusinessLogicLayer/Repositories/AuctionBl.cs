@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Transactions;
-using DataAccessLayer;
+using DataAccessLayer.Classes;
 using DataAccessLayer.Repositories;
 using ViewModelLayer.Models.Auction;
 
@@ -102,9 +100,8 @@ namespace BusinessLogicLayer.Repositories
                 }
                 if (oldBid != null)
                 {
-                    //TODO: promeni sve vezano za tokene u int
                     var oldUser = _userRepository.GetById(oldBid.UserId);
-                    oldUser.TokenCount += (int)oldBid.BidAmount;
+                    oldUser.TokenCount += oldBid.BidAmount;
                     _userRepository.Save(oldUser);
                 }
 
@@ -118,8 +115,7 @@ namespace BusinessLogicLayer.Repositories
                 };
                 _bidRepository.Save(bid);
                 _auctionRepository.Save(auction);
-                //TODO: promeni sve vezano za tokene u int
-                user.TokenCount -= (int)auction.Price;
+                user.TokenCount -= auction.Price;
                 _userRepository.Save(user);
                 tx.Complete();
                 return 0;

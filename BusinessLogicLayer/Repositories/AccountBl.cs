@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using DataAccessLayer;
+using DataAccessLayer.Classes;
 using DataAccessLayer.Repositories;
 using ViewModelLayer.Models.User;
 

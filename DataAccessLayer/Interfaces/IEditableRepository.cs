@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataAccessLayer.Interfaces
+﻿namespace DataAccessLayer.Interfaces
 {
-    interface IEditableRepository<T>
+    internal interface IEditableRepository<T>
     {
         void Save(T entity);
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Migrations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Entity.Migrations;
 using DataAccessLayer.Interfaces;
 
 namespace DataAccessLayer.Repositories
@@ -12,14 +7,14 @@ namespace DataAccessLayer.Repositories
     {
         public void Save(TEntity entity)
         {
-            _context.Set<TEntity>().AddOrUpdate(entity);
-            _context.SaveChanges();
+            context.Set<TEntity>().AddOrUpdate(entity);
+            context.SaveChanges();
         }
 
         public void Remove(TEntity entity)
         {
-            _context.Set<TEntity>().Remove(entity);
-            _context.SaveChanges();
+            context.Set<TEntity>().Remove(entity);
+            context.SaveChanges();
         }
     }
 }

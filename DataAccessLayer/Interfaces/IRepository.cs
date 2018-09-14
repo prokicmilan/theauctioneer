@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    interface IRepository<T>
+    internal interface IRepository<T>
     {
         T GetById(int id);
 

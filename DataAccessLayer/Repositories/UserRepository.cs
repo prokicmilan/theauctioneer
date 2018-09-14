@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataAccessLayer.Classes;
 
 namespace DataAccessLayer.Repositories
 {
@@ -11,12 +12,12 @@ namespace DataAccessLayer.Repositories
 
         public User SearchByUsername(string username)
         {
-           return _context.User.FirstOrDefault(user => user.Username.Equals(username));
+           return context.Users.FirstOrDefault(user => user.Username.Equals(username));
         }
 
         public User SearchByEmail(string email)
         {
-            return _context.User.FirstOrDefault(user => user.Email.Equals(email));
+            return context.Users.FirstOrDefault(user => user.Email.Equals(email));
         }
     }
 }

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{946C5986-F124-476A-92A7-214EC30072B7}</ProjectGuid>
+    <ProjectGuid>{051DD449-809D-45A0-839C-779ABDDF4C0A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DataAccessLayer</RootNamespace>
@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -51,15 +52,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Auction.cs">
-      <DependentUpon>TheAuctioneerEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AuctionStatus.cs">
-      <DependentUpon>TheAuctioneerEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Bid.cs">
-      <DependentUpon>TheAuctioneerEntities.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Classes\Auction.cs" />
+    <Compile Include="Classes\AuctionStatus.cs" />
+    <Compile Include="Classes\Bid.cs" />
+    <Compile Include="Classes\DataModel.cs" />
+    <Compile Include="Classes\Role.cs" />
+    <Compile Include="Classes\TokenOrder.cs" />
+    <Compile Include="Classes\TokenOrderStatus.cs" />
+    <Compile Include="Classes\User.cs" />
     <Compile Include="Interfaces\IEditableRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,63 +70,11 @@
     <Compile Include="Repositories\ReadOnlyRepositoryBase.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
-    <Compile Include="Role.cs">
-      <DependentUpon>TheAuctioneerEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TheAuctioneerEntities.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TheAuctioneerEntities.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TheAuctioneerEntities.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TheAuctioneerEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TheAuctioneerEntities.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TheAuctioneerEntities.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="TokenOrder.cs">
-      <DependentUpon>TheAuctioneerEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TokenOrderStatus.cs">
-      <DependentUpon>TheAuctioneerEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="User.cs">
-      <DependentUpon>TheAuctioneerEntities.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EntityDeploy Include="TheAuctioneerEntities.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>TheAuctioneerEntities.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.Config" />
+    <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="TheAuctioneerEntities.edmx.diagram">
-      <DependentUpon>TheAuctioneerEntities.edmx</DependentUpon>
-    </None>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="TheAuctioneerEntities.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>TheAuctioneerEntities.edmx</DependentUpon>
-      <LastGenOutput>TheAuctioneerEntities.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="TheAuctioneerEntities.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>TheAuctioneerEntities.edmx</DependentUpon>
-      <LastGenOutput>TheAuctioneerEntities.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

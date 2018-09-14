@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using DataAccessLayer.Classes;
 
 namespace DataAccessLayer.Repositories
 {
@@ -10,7 +7,7 @@ namespace DataAccessLayer.Repositories
     {
         public AuctionStatus GetByType(string type)
         {
-            return _context.AuctionStatus.Single(status => status.Type.Equals(type));
+            return context.AuctionStatuses.Single(status => status.Type.Equals(type));
         }
     }
 }

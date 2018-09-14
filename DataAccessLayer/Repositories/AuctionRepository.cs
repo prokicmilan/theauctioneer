@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using DataAccessLayer.Classes;
 
 namespace DataAccessLayer.Repositories
 {
@@ -23,7 +20,7 @@ namespace DataAccessLayer.Repositories
              * where
              *      AuctionStatus.[Type] = 'READY'
              */
-            return _context.Auction.Join(_context.AuctionStatus,                                                      // tabela za spajanje
+            return context.Auctions.Join(context.AuctionStatuses,                                                     // tabela za spajanje
                                                 auction => auction.StatusId,                                          // strani kljuc
                                                 status => status.Id,                                                  // primarni kljuc
                                                 (auction, status) => new {Auction = auction, AuctionStatus = status}) // agregacija
@@ -45,7 +42,7 @@ namespace DataAccessLayer.Repositories
              * where
              *      AuctionStatus.[Type] = 'OPENED'
              */
-            return _context.Auction.Join(_context.AuctionStatus,
+            return context.Auctions.Join(context.AuctionStatuses,
                                          auction => auction.StatusId,
                                          status => status.Id,
                                          (auction, status) => new { Auction = auction, AuctionStatus = status })
@@ -79,12 +76,12 @@ namespace DataAccessLayer.Repositories
          */
         public IQueryable<Auction> GetAllWonByUser(int userId)
         {
-            var query = from auction in _context.Auction
-                        join status in _context.AuctionStatus 
-                        on new { StatusId = auction.StatusId, Type = "COMPLETED" } equals new { StatusId = status.Id, Type = status.Type } 
-                        join bid in _context.Bid
-                        on new { AuctionId = auction.Id, UserId = userId } equals new { AuctionId = bid.AuctionId, UserId = bid.UserId }
-                        where bid.BidAmount == (from bidAggr in _context.Bid
+            var query = from auction in context.Auctions
+                        join status in context.AuctionStatuses 
+                        on new { auction.StatusId, Type = "COMPLETED" } equals new { StatusId = status.Id, status.Type } 
+                        join bid in context.Bids
+                        on new { AuctionId = auction.Id, UserId = userId } equals new { bid.AuctionId, bid.UserId }
+                        where bid.BidAmount == (from bidAggr in context.Bids
                                                 where bidAggr.AuctionId == bid.AuctionId
                                                 select bidAggr.BidAmount).Max()
                         select auction;
