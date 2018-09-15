@@ -10,11 +10,8 @@ namespace DataAccessLayer.Repositories
         {
             var query = from bid in context.Bids
                         where bid.AuctionId == auctionId
-                        where bid.BidAmount == (from b in context.Bids
-                                                where b.AuctionId == auctionId
-                                                select bid.BidAmount).Max()
                         select bid;
-            return query.FirstOrDefault();
+            return query.OrderByDescending(bid => bid.BidAmount).FirstOrDefault();
         }
 
     }
