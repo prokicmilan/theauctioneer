@@ -3,6 +3,7 @@ using BusinessLogicLayer.Repositories;
 using TheAuctioneer.Attributes;
 using TheAuctioneer.Principals;
 using ViewModelLayer.Models.Auction;
+using X.PagedList;
 
 namespace TheAuctioneer.Controllers
 {
@@ -13,9 +14,10 @@ namespace TheAuctioneer.Controllers
 
         // GET: Auctions
         [AllowAnonymous]
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            var models = _auctionBl.GetAllStarted();
+            var pageNumber = page ?? 1;
+            var models = _auctionBl.GetAllStarted().ToPagedList(pageNumber, 2);
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
             return View(models);
         }

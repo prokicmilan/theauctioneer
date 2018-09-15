@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using BusinessLogicLayer.Repositories;
 using TheAuctioneer.Attributes;
 using TheAuctioneer.Principals;
-using ViewModelLayer.Models.User;
+using X.PagedList;
 
 namespace TheAuctioneer.Controllers
 {
@@ -16,10 +12,11 @@ namespace TheAuctioneer.Controllers
 
         // GET: Users
 
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
-            var models = _accountBl.DisplayUsers();
+            var pageNumber = page ?? 1;
+            var models = _accountBl.DisplayUsers().ToPagedList(pageNumber, 2);
             return View(models);
         }
 

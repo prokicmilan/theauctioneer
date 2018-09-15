@@ -1,5 +1,6 @@
-﻿@model IEnumerable<ViewModelLayer.Models.Auction.DisplayAuctionModel>
-
+﻿@using X.PagedList
+@using X.PagedList.Mvc
+@model IEnumerable<ViewModelLayer.Models.Auction.DisplayAuctionModel>
 @{
     ViewBag.Title = "Index";
 }
@@ -11,7 +12,7 @@
 </p>
 @foreach (var item in Model)
 {
-    <div class="col-md-6">
+    <div class="col-md-4" style="padding: 10px;">
         <img src="@item.Image" class="img-responsive" style="height: 200px; width: 200px; margin: auto" />
         <br/>
         <div class="text-center">
@@ -31,4 +32,22 @@
             </div>
         }
     </div>
+}
+@Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))
+
+
+@section scripts {
+    <script src="/Scripts/jquery.signalR-2.3.0.min.js"></script>
+    <script src="/SignalR/hubs"></script>
+    <script>
+
+        $.connection.hub.start().done(function() {
+            $.connection.bidHub.server.alertAll();
+        })
+
+        $.connection.bidHub.client.BroadcastMessage = function (message) {
+            $("#par").text(message);
+        }
+
+    </script>
 }
