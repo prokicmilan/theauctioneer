@@ -144,6 +144,11 @@ namespace BusinessLogicLayer.Repositories
             return models;
         }
 
+        public int GetAuctionPrice(int auctionId)
+        {
+            return _auctionRepository.GetById(auctionId).Price;
+        }
+
         private DisplayAuctionModel InitDisplayAuctionModel(Auction auction)
         {
             var model = new DisplayAuctionModel
@@ -156,6 +161,12 @@ namespace BusinessLogicLayer.Repositories
             };
             var expiresAt = auction.ExpiresAt != DateTime.MinValue ? auction.ExpiresAt : DateTime.MaxValue;
             var timeLeft = expiresAt - DateTime.Now;
+            var topBid = _bidRepository.GetTopBidForAuction(auction.Id);
+            if (topBid != null)
+            {
+                var highestBidder = _userRepository.GetById(topBid.UserId);
+                model.HighestBidder = highestBidder.Username;
+            }
             model.H = timeLeft.Hours;
             model.M = timeLeft.Minutes;
             model.S = timeLeft.Seconds;

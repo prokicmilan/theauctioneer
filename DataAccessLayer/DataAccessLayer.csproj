@@ -59,7 +59,7 @@
     <Compile Include="Classes\Role.cs" />
     <Compile Include="Classes\TokenOrder.cs" />
     <Compile Include="Classes\TokenOrderStatus.cs" />
-    <Compile Include="Classes\User.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="Interfaces\IEditableRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

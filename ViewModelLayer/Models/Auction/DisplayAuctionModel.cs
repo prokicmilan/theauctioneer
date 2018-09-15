@@ -7,6 +7,9 @@ namespace ViewModelLayer.Models.Auction
 
         public string Image { get; set; }
 
+        [DisplayName("Highest bidder")]
+        public string HighestBidder { get; set; }
+
         [DisplayName("Expires in")]
         public int H { get; set; }
 

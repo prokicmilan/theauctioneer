@@ -1,6 +1,8 @@
 ﻿using System.Web.Mvc;
 using BusinessLogicLayer.Repositories;
+using Microsoft.AspNet.SignalR;
 using TheAuctioneer.Attributes;
+using TheAuctioneer.Hubs;
 using TheAuctioneer.Principals;
 using ViewModelLayer.Models.Auction;
 using X.PagedList;
@@ -107,6 +109,9 @@ namespace TheAuctioneer.Controllers
             switch (retVal)
             {
                 case 0:
+                    var hubContext = GlobalHost.ConnectionManager.GetHubContext<BidHub>();
+                    var price = _auctionBl.GetAuctionPrice(id);
+                    hubContext.Clients.All.UpdateAuction(id, price, ((UserPrincipal) HttpContext.User).Username());
                     return Redirect(Request.UrlReferrer.ToString());
                 case -1:
                     TempData["ErrorMessage"] = "The auction has already expired.";
