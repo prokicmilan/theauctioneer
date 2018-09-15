@@ -20,7 +20,18 @@
         </div>
         <br/>
         <div class="text-center">
-            @Html.DisplayFor(modelitem => item.Price)
+            @Html.LabelFor(modelItem => item.Price)
+            @Html.DisplayFor(modelItem => item.Price)
+        </div>
+        <div class="text-center">
+            @Html.LabelFor(modelItem => item.H)
+            <div class="expiresIn">
+                <span class="hours">@Html.DisplayFor(modelItem => item.H)</span>
+                :
+                <span class="minutes">@Html.DisplayFor(modelItem => item.M)</span>
+                :
+                <span class="seconds">@Html.DisplayFor(modelItem => item.S)</span>
+            </div>
         </div>
         <br/>
         @using (Html.BeginForm("Bid", "Auctions", FormMethod.Post))
@@ -45,9 +56,40 @@
             $.connection.bidHub.server.alertAll();
         })
 
-        $.connection.bidHub.client.BroadcastMessage = function (message) {
+        $.connection.bidHub.client.BroadcastMessage = function(message) {
             $("#par").text(message);
         }
 
+    </script>
+    <script>
+        function updateTime() {
+            var allDivs = document.getElementsByClassName("expiresIn");
+            for (i = 0; i < allDivs.length; i++) {
+                var expired = allDivs[i].getElementsByClassName("expired");
+                if (expired.length != 0) continue;
+                var hourSpan = allDivs[i].getElementsByClassName("hours");
+                var minuteSpan = allDivs[i].getElementsByClassName("minutes");
+                var secondSpan = allDivs[i].getElementsByClassName("seconds");
+                var hour = hourSpan[0].innerText;
+                if (hour != 0) return;
+                var minute = minuteSpan[0].innerText;
+                var second = secondSpan[0].innerText;
+                if (--second < 0) {
+                    second = 59;
+                    if (--minute < 0) {
+                        minute = 59;
+                        if (--hour < 0) {
+                            allDivs[i].innerHTML = "<p class='expired' style='color: red'> Expired! </p>";
+                            continue;
+                        }
+                    }
+                }
+                hourSpan[0].innerText = hour;
+                minuteSpan[0].innerText = minute;
+                secondSpan[0].innerText = second;
+            }
+        }
+
+        var t = setInterval(updateTime, 1000);
     </script>
 }

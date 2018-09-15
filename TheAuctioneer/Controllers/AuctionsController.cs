@@ -17,7 +17,7 @@ namespace TheAuctioneer.Controllers
         public ActionResult Index(int? page)
         {
             var pageNumber = page ?? 1;
-            var models = _auctionBl.GetAllStarted().ToPagedList(pageNumber, 2);
+            var models = _auctionBl.GetAllStarted().ToPagedList(pageNumber, 10);
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
             return View(models);
         }

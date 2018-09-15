@@ -53,7 +53,6 @@ namespace BusinessLogicLayer.Repositories
             {
                 Name = model.Name,
                 Description = model.Description,
-                ExpiresAt = DateTime.MaxValue,
                 Price = model.Price,
                 Duration = model.Duration
             };
@@ -155,6 +154,11 @@ namespace BusinessLogicLayer.Repositories
                 Price = auction.Price,
                 Image = "data:image/png;base64," + Convert.ToBase64String(auction.Image, 0, auction.Image.Length)
             };
+            var expiresAt = auction.ExpiresAt != DateTime.MinValue ? auction.ExpiresAt : DateTime.MaxValue;
+            var timeLeft = expiresAt - DateTime.Now;
+            model.H = timeLeft.Hours;
+            model.M = timeLeft.Minutes;
+            model.S = timeLeft.Seconds;
 
             return model;
         }
