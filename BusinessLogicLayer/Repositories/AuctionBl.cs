@@ -35,7 +35,8 @@ namespace BusinessLogicLayer.Repositories
 
         public List<DisplayAuctionModel> GetAllStarted()
         {
-            var auctions = _auctionRepository.GetAllStarted().ToList();
+            MarkExpiredAsCompleted();
+            var auctions = _auctionRepository.GetAllStarted();
             var models = new List<DisplayAuctionModel>();
             foreach (var auction in auctions)
             {
@@ -53,7 +54,8 @@ namespace BusinessLogicLayer.Repositories
                 Name = model.Name,
                 Description = model.Description,
                 ExpiresAt = DateTime.MaxValue,
-                Price = model.Price
+                Price = model.Price,
+                Duration = model.Duration
             };
             var target = new MemoryStream();
             model.Image.InputStream.CopyTo(target);
@@ -76,7 +78,9 @@ namespace BusinessLogicLayer.Repositories
 
         public void StartAuction(DisplayAuctionModel model)
         {
+            MarkExpiredAsCompleted();
             var auction = _auctionRepository.GetById(model.Id);
+            auction.ExpiresAt = DateTime.Now.AddSeconds(auction.Duration);
             auction.StatusId = _auctionStatusRepository.GetByType("OPENED").Id;
             _auctionRepository.Save(auction);
         }
@@ -85,18 +89,24 @@ namespace BusinessLogicLayer.Repositories
         {
             using (var tx = new TransactionScope())
             {
+                MarkExpiredAsCompleted();
                 var auction = _auctionRepository.GetById(auctionId);
+                if (auction.ExpiresAt <= DateTime.Now)
+                {
+                    tx.Complete();
+                    return -1;
+                }
                 var user = _userRepository.GetById(userId);
                 if ((user.TokenCount - (auction.Price)) < 0)
                 {
                     tx.Dispose();
-                    return -1;
+                    return -2;
                 }
                 var oldBid = _bidRepository.GetTopBidForAuction(auctionId);
                 if (oldBid != null && oldBid.UserId == userId)
                 {
                     tx.Dispose();
-                    return -2;
+                    return -3;
                 }
                 if (oldBid != null)
                 {
@@ -147,6 +157,20 @@ namespace BusinessLogicLayer.Repositories
             };
 
             return model;
+        }
+
+        private void MarkExpiredAsCompleted()
+        {
+            IList<Auction> auctions = _auctionRepository.GetAllStarted().ToList();
+            var completedId = _auctionStatusRepository.GetByType("COMPLETED").Id;
+            foreach (var auction in auctions)
+            {
+                if (auction.ExpiresAt < DateTime.Now)
+                {
+                    auction.StatusId = completedId;
+                    _auctionRepository.Save(auction);
+                }
+            }
         }
 
     }

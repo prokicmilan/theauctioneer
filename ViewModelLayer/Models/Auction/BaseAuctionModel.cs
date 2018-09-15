@@ -13,6 +13,7 @@ namespace ViewModelLayer.Models.Auction
         public string Description { get; set; }
 
         [Required(ErrorMessage = "You must enter a starting price for the auction")]
+        [Range(1, int.MaxValue, ErrorMessage = "Price cannot be negative.")]
         public int Price { get; set; }
         
     }

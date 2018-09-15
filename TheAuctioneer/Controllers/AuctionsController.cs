@@ -109,9 +109,12 @@ namespace TheAuctioneer.Controllers
                 case 0:
                     return Redirect(Request.UrlReferrer.ToString());
                 case -1:
-                    TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
+                    TempData["ErrorMessage"] = "The auction has already expired.";
                     break;
                 case -2:
+                    TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
+                    break;
+                case -3:
                     TempData["ErrorMessage"] = "You're already the highest bidder on that auction.";
                     break;
             }

@@ -25,6 +25,9 @@ namespace DataAccessLayer.Classes
         [Required]
         public int Price { get; set; }
 
+        [Required]
+        public long Duration { get; set; }
+
         public DateTime ExpiresAt { get; set; }
 
         public int StatusId { get; set; }

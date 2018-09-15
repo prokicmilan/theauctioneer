@@ -5,5 +5,11 @@
 
         public string Image { get; set; }
 
+        public int H { get; set; }
+
+        public int M { get; set; }
+
+        public int S { get; set; }
+
     }
 }
