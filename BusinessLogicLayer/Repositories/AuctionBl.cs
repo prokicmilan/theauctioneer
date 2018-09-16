@@ -113,7 +113,6 @@ namespace BusinessLogicLayer.Repositories
                     oldUser.TokenCount += oldBid.BidAmount;
                     _userRepository.Save(oldUser);
                 }
-
                 auction.Price++;
                 var bid = new Bid
                 {
@@ -177,7 +176,7 @@ namespace BusinessLogicLayer.Repositories
         private void MarkExpiredAsCompleted()
         {
             IList<Auction> auctions = _auctionRepository.GetAllStarted().ToList();
-            var completedId = _auctionStatusRepository.GetByType("COMPLETED").Id;
+            var completedId = _auctionStatusRepository.GetByType("FINISHED").Id;
             foreach (var auction in auctions)
             {
                 if (auction.ExpiresAt < DateTime.Now)
