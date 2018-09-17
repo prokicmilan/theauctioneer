@@ -69,6 +69,8 @@
     <Compile Include="Repositories\EditableRepositoryBase.cs" />
     <Compile Include="Repositories\ReadOnlyRepositoryBase.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
+    <Compile Include="Repositories\TokenOrderRepository.cs" />
+    <Compile Include="Repositories\TokenOrderStatusRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>

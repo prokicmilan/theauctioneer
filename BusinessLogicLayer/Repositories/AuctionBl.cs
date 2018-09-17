@@ -51,6 +51,7 @@ namespace BusinessLogicLayer.Repositories
         {
             var auction = new Auction
             {
+                Id = Guid.NewGuid(),
                 Name = model.Name,
                 Description = model.Description,
                 Price = model.Price,
@@ -64,7 +65,7 @@ namespace BusinessLogicLayer.Repositories
             _auctionRepository.Save(auction);
         }
 
-        public DisplayAuctionModel DisplayAuctionDetails(int id)
+        public DisplayAuctionModel DisplayAuctionDetails(Guid id)
         {
             return InitDisplayAuctionModel(_auctionRepository.GetById(id));
         }
@@ -84,7 +85,7 @@ namespace BusinessLogicLayer.Repositories
             _auctionRepository.Save(auction);
         }
 
-        public int PostBid(int auctionId, int userId)
+        public int PostBid(Guid auctionId, Guid userId)
         {
             using (var tx = new TransactionScope())
             {
@@ -130,7 +131,7 @@ namespace BusinessLogicLayer.Repositories
             }
         }
 
-        public List<DisplayAuctionModel> GetAllWonByUser(int userId)
+        public List<DisplayAuctionModel> GetAllWonByUser(Guid userId)
         {
             var auctions = _auctionRepository.GetAllWonByUser(userId);
             var models = new List<DisplayAuctionModel>();
@@ -143,7 +144,7 @@ namespace BusinessLogicLayer.Repositories
             return models;
         }
 
-        public int GetAuctionPrice(int auctionId)
+        public int GetAuctionPrice(Guid auctionId)
         {
             return _auctionRepository.GetById(auctionId).Price;
         }

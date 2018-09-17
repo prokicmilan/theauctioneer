@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayer.Classes
@@ -8,11 +9,10 @@ namespace DataAccessLayer.Classes
     {
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [Required]
         public int Amount { get; set; }
@@ -21,6 +21,6 @@ namespace DataAccessLayer.Classes
         public decimal Price { get; set; }
 
         [Required]
-        public int StatusId { get; set; }
+        public Guid StatusId { get; set; }
     }
 }

@@ -145,7 +145,7 @@ namespace TheAuctioneer.Controllers
 
         // GET: /Account/Edit/5
         [AuthorizeSelf]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
             var model = _accountBl.DisplayUserDetails(id);
             return View(model);

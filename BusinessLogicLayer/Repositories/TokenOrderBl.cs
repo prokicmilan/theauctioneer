@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Classes;
 using DataAccessLayer.Repositories;
+using System;
 
 namespace BusinessLogicLayer.Repositories
 {
@@ -10,7 +11,7 @@ namespace BusinessLogicLayer.Repositories
 
         private readonly TokenOrderStatusRepository _tokenOrderStatusRepository = new TokenOrderStatusRepository();
 
-        public int CreateOrder(int userId, string type)
+        public int CreateOrder(Guid userId, string type)
         {
             int amount = 0;
             switch (type)
@@ -28,6 +29,7 @@ namespace BusinessLogicLayer.Repositories
             var price = amount * 50;
             TokenOrder order = new TokenOrder
             {
+                Id = Guid.NewGuid(),
                 Amount = amount,
                 Price = price,
                 UserId = userId,

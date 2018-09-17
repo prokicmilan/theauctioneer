@@ -1,15 +1,8 @@
-INSERT INTO [dbo].[Role]
-           ([Type]
-           ,[Description])
-     VALUES
-           (
-				'Admin',
-				'System administrator'
-			),
-			(
-				'User',
-				'Regular user'
-			)
-GO
-
-
+insert into Role(
+	Id,
+	[Type],
+	[Description]
+)
+	values
+		(newid(), 'Admin', 'System administrator'),
+		(newid(), 'User', 'Regular user')

@@ -73,6 +73,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AccountBl.cs" />
     <Compile Include="Repositories\AuctionBl.cs" />
+    <Compile Include="Repositories\TokenOrderBl.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayer.Classes
@@ -8,8 +9,7 @@ namespace DataAccessLayer.Classes
     {
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -39,7 +39,7 @@ namespace DataAccessLayer.Classes
         public int TokenCount { get; set; }
 
         [Required]
-        public int RoleId { get; set; }
+        public Guid RoleId { get; set; }
 
     }
 }

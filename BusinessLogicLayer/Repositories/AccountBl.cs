@@ -26,7 +26,7 @@ namespace BusinessLogicLayer.Repositories
             return models;
         }
 
-        public DisplayUserModel DisplayUserDetails(int id)
+        public DisplayUserModel DisplayUserDetails(Guid id)
         {
             return InitDisplayUserModel(_userRepository.GetById(id));
         }
@@ -63,6 +63,7 @@ namespace BusinessLogicLayer.Repositories
 
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Name = model.Firstname,
                 Surname = model.Lastname,
                 Gender = model.Gender,

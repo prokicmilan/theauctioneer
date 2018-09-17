@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using DataAccessLayer.Classes;
 
 namespace DataAccessLayer.Repositories
@@ -74,7 +75,7 @@ namespace DataAccessLayer.Repositories
 		 *  		             where
 		 *  			            [b2].AuctionId = [b].AuctionId)
          */
-        public IQueryable<Auction> GetAllWonByUser(int userId)
+        public IQueryable<Auction> GetAllWonByUser(Guid userId)
         {
             var query = from auction in context.Auctions
                         join status in context.AuctionStatuses 

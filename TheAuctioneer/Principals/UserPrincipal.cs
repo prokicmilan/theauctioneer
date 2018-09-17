@@ -25,14 +25,20 @@ namespace TheAuctioneer.Principals
             return roles.Any(r => r.Equals(_sessionModel.Role));
         }
 
-        public int Id()
+        public Guid Id
         {
-            return _sessionModel.Id;
+            get
+            {
+                return _sessionModel.Id;
+            }
         }
 
-        public string Username()
+        public string Username
         {
-            return _sessionModel.Username;
+            get
+            {
+                return _sessionModel.Username;
+            }
         }
     }
 }

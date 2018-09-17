@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using DataAccessLayer.Classes;
 
 namespace DataAccessLayer.Repositories
@@ -6,7 +7,7 @@ namespace DataAccessLayer.Repositories
     public class BidRepository : EditableRepositoryBase<Bid>
     {
 
-        public Bid GetTopBidForAuction(int auctionId)
+        public Bid GetTopBidForAuction(Guid auctionId)
         {
             var query = from bid in context.Bids
                         where bid.AuctionId == auctionId

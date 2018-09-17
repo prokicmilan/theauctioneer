@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using BusinessLogicLayer.Repositories;
 using TheAuctioneer.Attributes;
 using TheAuctioneer.Principals;
@@ -22,9 +23,9 @@ namespace TheAuctioneer.Controllers
 
         // GET: Users/Details/5
         [AuthorizeSelf]
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
-            if (((UserPrincipal)HttpContext.User).Id() != id)
+            if (((UserPrincipal)HttpContext.User).Id != id)
             {
                 return RedirectToAction("Unauthorized", "Account");
             }

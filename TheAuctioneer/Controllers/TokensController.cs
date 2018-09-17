@@ -22,7 +22,7 @@ namespace TheAuctioneer.Controllers
         public ActionResult Buy(string type)
         {
             // create the order
-            var userId = ((UserPrincipal)HttpContext.User).Id();
+            var userId = ((UserPrincipal)HttpContext.User).Id;
             var orderId = 20;
             return Redirect("http://stage.centili.com/payment/widget?apikey=5cdc11a42057fb2bc55b6ab4e9801917&country=rs&userId=" + userId + "&reference=" + orderId);
         }

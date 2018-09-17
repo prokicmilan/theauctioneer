@@ -9,8 +9,7 @@ namespace DataAccessLayer.Classes
     {
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -30,7 +29,7 @@ namespace DataAccessLayer.Classes
 
         public DateTime ExpiresAt { get; set; }
 
-        public int StatusId { get; set; }
+        public Guid StatusId { get; set; }
 
     }
 }

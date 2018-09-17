@@ -9,7 +9,7 @@ namespace DataAccessLayer.Interfaces
 {
     internal interface IRepository<T>
     {
-        T GetById(int id);
+        T GetById(Guid id);
 
         IQueryable<T> GetAll();
 

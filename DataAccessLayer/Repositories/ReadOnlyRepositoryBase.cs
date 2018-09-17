@@ -10,7 +10,7 @@ namespace DataAccessLayer.Repositories
     {
         protected readonly DataModel context = new DataModel();
 
-        public TEntity GetById(int id)
+        public TEntity GetById(Guid id)
         {
             return context.Set<TEntity>().Find(id);
         }

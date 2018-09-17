@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using BusinessLogicLayer.Repositories;
 using Microsoft.AspNet.SignalR;
 using TheAuctioneer.Attributes;
@@ -35,8 +36,8 @@ namespace TheAuctioneer.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateAuctionModel model)
         {
-            try
-            {
+            //try
+            //{
                 if (ModelState.IsValid)
                 {
                     _auctionBl.CreateAuction(model);
@@ -44,11 +45,11 @@ namespace TheAuctioneer.Controllers
                 }
 
                 return View();
-            }
-            catch
-            {
-                return View();
-            }
+            //}
+            //catch
+            //{
+            //    return View();
+            //}
         }
 
         // GET: Auctions/ShowReady
@@ -60,7 +61,7 @@ namespace TheAuctioneer.Controllers
         }
 
         // GET: Auctions/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
             var model = _auctionBl.DisplayAuctionDetails(id);
             return View(model);
@@ -68,7 +69,7 @@ namespace TheAuctioneer.Controllers
 
         // GET: Auctions/Delete/5
         [AuthorizeUser(RolesAllowed = "Admin")]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             var model = _auctionBl.DisplayAuctionDetails(id);
             return View(model);
@@ -86,7 +87,7 @@ namespace TheAuctioneer.Controllers
 
         // GET: Auctions/Start/5
         [AuthorizeUser(RolesAllowed = "Admin")]
-        public ActionResult Start(int id)
+        public ActionResult Start(Guid id)
         {
             var model = _auctionBl.DisplayAuctionDetails(id);
             return View(model);
@@ -103,15 +104,15 @@ namespace TheAuctioneer.Controllers
         }
 
         [HttpPost]
-        public ActionResult Bid(int id)
+        public ActionResult Bid(Guid id)
         {
-            var retVal = _auctionBl.PostBid(id, ((UserPrincipal) HttpContext.User).Id());
+            var retVal = _auctionBl.PostBid(id, ((UserPrincipal) HttpContext.User).Id);
             switch (retVal)
             {
                 case 0:
                     var hubContext = GlobalHost.ConnectionManager.GetHubContext<BidHub>();
                     var price = _auctionBl.GetAuctionPrice(id);
-                    hubContext.Clients.All.UpdateAuction(id, price, ((UserPrincipal) HttpContext.User).Username());
+                    hubContext.Clients.All.UpdateAuction(id, price, ((UserPrincipal) HttpContext.User).Username);
                     return Redirect(Request.UrlReferrer.ToString());
                 case -1:
                     TempData["ErrorMessage"] = "The auction has already expired.";
@@ -128,7 +129,7 @@ namespace TheAuctioneer.Controllers
 
         public ActionResult ListWon()
         {
-            var models = _auctionBl.GetAllWonByUser(((UserPrincipal) HttpContext.User).Id());
+            var models = _auctionBl.GetAllWonByUser(((UserPrincipal) HttpContext.User).Id);
             return View("ShowReady", models);
         }
     }
