@@ -57,6 +57,7 @@
     <Compile Include="Classes\Bid.cs" />
     <Compile Include="Classes\DataModel.cs" />
     <Compile Include="Classes\Role.cs" />
+    <Compile Include="Classes\SystemParameters.cs" />
     <Compile Include="Classes\TokenOrder.cs" />
     <Compile Include="Classes\TokenOrderStatus.cs" />
     <Compile Include="Classes\User.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Repositories\EditableRepositoryBase.cs" />
     <Compile Include="Repositories\ReadOnlyRepositoryBase.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
+    <Compile Include="Repositories\SystemParameterRepository.cs" />
     <Compile Include="Repositories\TokenOrderRepository.cs" />
     <Compile Include="Repositories\TokenOrderStatusRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />

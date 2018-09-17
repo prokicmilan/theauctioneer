@@ -131,6 +131,13 @@ namespace TheAuctioneer.Controllers
             }
         }
 
+        // GET: /Account/Details/5
+        public ActionResult Details(Guid id)
+        {
+            var model = _accountBl.DisplayUserDetails(id);
+            return View(model);
+        }
+
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -175,7 +182,7 @@ namespace TheAuctioneer.Controllers
 
         [AuthorizeSelf]
         // GET: Account/ChangePassword/5
-        public ActionResult ChangePassword(int id)
+        public ActionResult ChangePassword(Guid id)
         {
             return View();
         }

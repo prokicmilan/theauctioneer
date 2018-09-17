@@ -36,8 +36,8 @@ namespace TheAuctioneer.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateAuctionModel model)
         {
-            //try
-            //{
+            try
+            {
                 if (ModelState.IsValid)
                 {
                     _auctionBl.CreateAuction(model);
@@ -45,11 +45,11 @@ namespace TheAuctioneer.Controllers
                 }
 
                 return View();
-            //}
-            //catch
-            //{
-            //    return View();
-            //}
+            }
+            catch
+            {
+                return View();
+            }
         }
 
         // GET: Auctions/ShowReady

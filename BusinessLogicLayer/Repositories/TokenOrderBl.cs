@@ -11,32 +11,35 @@ namespace BusinessLogicLayer.Repositories
 
         private readonly TokenOrderStatusRepository _tokenOrderStatusRepository = new TokenOrderStatusRepository();
 
-        public int CreateOrder(Guid userId, string type)
+        private readonly SystemParameterRepository _systemParameterRepository = new SystemParameterRepository();
+
+        public Guid CreateOrder(Guid userId, string type)
         {
             int amount = 0;
             switch (type)
             {
                 case "silver":
-                    amount = 30;
+                    amount = Convert.ToInt32(_systemParameterRepository.GetByParameterName("S").ParameterValue);
                     break;
                 case "gold":
-                    amount = 70;
+                    amount = Convert.ToInt32(_systemParameterRepository.GetByParameterName("G").ParameterValue);
                     break;
                 case "platinum":
-                    amount = 180;
+                    amount = Convert.ToInt32(_systemParameterRepository.GetByParameterName("P").ParameterValue);
                     break;
             }
             var price = amount * 50;
+            var orderId = Guid.NewGuid();
             TokenOrder order = new TokenOrder
             {
-                Id = Guid.NewGuid(),
+                Id = orderId,
                 Amount = amount,
                 Price = price,
                 UserId = userId,
                 StatusId = _tokenOrderStatusRepository.GetByType("SUBMITTED").Id
             };
             _tokenOrderRepository.Save(order);
-            return 0;
+            return orderId;
         }
 
     }

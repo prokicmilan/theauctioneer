@@ -23,5 +23,6 @@ namespace DataAccessLayer.Classes
 
         public virtual DbSet<User> Users { get; set; }
 
+        public virtual DbSet<SystemParameter> SystemParameters { get; set; }
     }
 }
