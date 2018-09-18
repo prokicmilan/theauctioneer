@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "Buy";
+}
+
+<h2>Buy</h2>
+
+<div class="card-deck">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header text-secondary text-center">
+                <h4>
+                    Silver pack
+                </h4>
+            </div>
+        </div>
+        <center>
+            <p>
+                Entry level package.
+            </p>
+            @using (Html.BeginForm("Buy", "Tokens", new { type = "silver" }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="submit" value="" style="background: url(https://www.centili.com/images/centili-widget-button.png) no-repeat; width:147px; height:50px" class="btn" />
+            }
+        </center>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header text-secondary text-center">
+                <h4>
+                    Gold pack
+                </h4>
+            </div>
+        </div>
+        <center>
+            <p>
+                Mid level package.
+            </p>
+            @using (Html.BeginForm("Buy", "Tokens", new { type = "gold" }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="submit" value="" style="background: url(https://www.centili.com/images/centili-widget-button.png) no-repeat; width:147px; height:50px" class="btn" />
+            }
+        </center>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header text-secondary text-center">
+                <h4>
+                    Platinum pack
+                </h4>
+            </div>
+        </div>
+        <center>
+            <p>
+                Highest tier, best bang for your buck.
+            </p>
+            @using (Html.BeginForm("Buy", "Tokens", new { type = "platinum" }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="submit" value="" style="background: url(https://www.centili.com/images/centili-widget-button.png) no-repeat; width:147px; height:50px" class="btn" />
+            }
+        </center>
+    </div>
+</div>
