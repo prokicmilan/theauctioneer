@@ -22,5 +22,12 @@ namespace DataAccessLayer.Classes
 
         [Required]
         public Guid StatusId { get; set; }
+
+        [Required]
+        public DateTime TimestampCreated { get; set; }
+
+        [Required]
+        public DateTime TimestampChanged { get; set; }
+
     }
 }

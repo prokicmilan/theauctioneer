@@ -1,4 +1,7 @@
-/****** Object:  Table [dbo].[TokenOrder]    Script Date: 16-Sep-18 13:44:18 ******/
+USE [TheAuctioneer]
+GO
+
+/****** Object:  Table [dbo].[TokenOrder]    Script Date: 19-Sep-18 21:29:02 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6,11 +9,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[TokenOrder](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[UserId] [int] NOT NULL,
+	[Id] [uniqueidentifier] NOT NULL,
+	[UserId] [uniqueidentifier] NOT NULL,
 	[Amount] [int] NOT NULL,
 	[Price] [decimal](18, 2) NOT NULL,
-	[StatusId] [int] NOT NULL,
+	[StatusId] [uniqueidentifier] NOT NULL,
+	[TimestampCreated] [datetime2](7) NOT NULL,
+	[TimestampChanged] [datetime2](7) NOT NULL,
  CONSTRAINT [PK_TokenOrder] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -20,7 +25,6 @@ GO
 
 ALTER TABLE [dbo].[TokenOrder]  WITH CHECK ADD  CONSTRAINT [FK_TokenOrder_TokenOrderStatus] FOREIGN KEY([StatusId])
 REFERENCES [dbo].[TokenOrderStatus] ([Id])
-ON UPDATE CASCADE
 GO
 
 ALTER TABLE [dbo].[TokenOrder] CHECK CONSTRAINT [FK_TokenOrder_TokenOrderStatus]
@@ -28,7 +32,6 @@ GO
 
 ALTER TABLE [dbo].[TokenOrder]  WITH CHECK ADD  CONSTRAINT [FK_TokenOrder_User] FOREIGN KEY([UserId])
 REFERENCES [dbo].[User] ([Id])
-ON UPDATE CASCADE
 GO
 
 ALTER TABLE [dbo].[TokenOrder] CHECK CONSTRAINT [FK_TokenOrder_User]
