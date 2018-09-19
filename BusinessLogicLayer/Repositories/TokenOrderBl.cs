@@ -1,7 +1,9 @@
 ﻿using DataAccessLayer.Classes;
 using DataAccessLayer.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Transactions;
+using ViewModelLayer.Models.TokenOrder;
 
 namespace BusinessLogicLayer.Repositories
 {
@@ -33,16 +35,38 @@ namespace BusinessLogicLayer.Repositories
             }
             var price = amount * 50;
             var orderId = Guid.NewGuid();
+            var timestamp = DateTime.Now;
             TokenOrder order = new TokenOrder
             {
                 Id = orderId,
                 Amount = amount,
                 Price = price,
                 UserId = userId,
-                StatusId = _tokenOrderStatusRepository.GetByType("SUBMITTED").Id
+                StatusId = _tokenOrderStatusRepository.GetByType("SUBMITTED").Id,
+                TimestampCreated = timestamp,
+                TimestampChanged = timestamp
             };
             _tokenOrderRepository.Save(order);
             return orderId;
+        }
+
+        public List<DisplayTokenOrderModel> GetAllOrdersByUser(Guid userId)
+        {
+            var orders = _tokenOrderRepository.GetAllOrdersByUser(userId);
+            var models = new List<DisplayTokenOrderModel>();
+            foreach (var order in orders)
+            {
+                var model = new DisplayTokenOrderModel
+                {
+                    Amount = order.Amount,
+                    Price = order.Price,
+                    TimestampCreated = order.TimestampCreated.Date,
+                    TimestampChanged = order.TimestampChanged.Date,
+                    Status = _tokenOrderStatusRepository.GetById(order.StatusId).Type
+                };
+                models.Add(model);
+            }
+            return models;
         }
 
         public int ProcessPayment(Guid userId, Guid orderId, string status)
@@ -74,12 +98,14 @@ namespace BusinessLogicLayer.Repositories
                     if (status.Equals("canceled") || status.Equals("failed"))
                     {
                         order.StatusId = _tokenOrderStatusRepository.GetByType("CANCELED").Id;
+                        order.TimestampChanged = DateTime.Now;
                         _tokenOrderRepository.Save(order);
                         tx.Complete();
                         return 0;
                     }
                     // sve ok, dodajemo korisniku tokene
                     order.StatusId = _tokenOrderStatusRepository.GetByType("COMPLETED").Id;
+                    order.TimestampChanged = DateTime.Now;
                     var user = _userRepository.GetById(userId);
                     user.TokenCount += order.Amount;
                     _tokenOrderRepository.Save(order);

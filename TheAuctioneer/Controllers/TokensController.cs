@@ -15,6 +15,13 @@ namespace TheAuctioneer.Controllers
 
         private readonly TokenOrderBl _tokenOrderBl = new TokenOrderBl();
 
+        // GET: Tokens
+        public ActionResult Index()
+        {
+            var model = _tokenOrderBl.GetAllOrdersByUser(((UserPrincipal)HttpContext.User).Id);
+            return View("TokenOrders", model);
+        }
+
         // GET: Tokens/Buy
         public ActionResult Buy()
         {

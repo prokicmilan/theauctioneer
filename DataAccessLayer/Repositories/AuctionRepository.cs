@@ -50,33 +50,34 @@ namespace DataAccessLayer.Repositories
                                    .Where(status => status.AuctionStatus.Type.Equals("OPENED"))
                                    .Select(auction => auction.Auction);
         }
-        /*
-         * select
-	     *      [a].*
-         *  from
-	     *      Auction [a]
-         *  join
-         *      AuctionStatus [as]
-         *  on
-         *      [as].Id = [a].StatusId
-         *  and
-         *      [as].Type = 'COMPLETED'
-         *  join
-	     *      Bid [b]
-         *  on
-	     *      [b].AuctionId = [a].Id
-         *  and
-	     *      [b].UserId = @userId
-         *  where
-	     *      [b].BidAmount = (select
-		 *			                max([b2].BidAmount)
-		 * 		                 from
-		 *      		            Bid [b2]
-		 *  		             where
-		 *  			            [b2].AuctionId = [b].AuctionId)
-         */
+
         public IQueryable<Auction> GetAllWonByUser(Guid userId)
         {
+            /*
+             * select
+             *      [a].*
+             *  from
+             *      Auction [a]
+             *  join
+             *      AuctionStatus [as]
+             *  on
+             *      [as].Id = [a].StatusId
+             *  and
+             *      [as].Type = 'COMPLETED'
+             *  join
+             *      Bid [b]
+             *  on
+             *      [b].AuctionId = [a].Id
+             *  and
+             *      [b].UserId = @userId
+             *  where
+             *      [b].BidAmount = (select
+             *			                max([b2].BidAmount)
+             * 		                 from
+             *      		            Bid [b2]
+             *  		             where
+             *  			            [b2].AuctionId = [b].AuctionId)
+             */
             var query = from auction in context.Auctions
                         join status in context.AuctionStatuses 
                         on new { auction.StatusId, Type = "COMPLETED" } equals new { StatusId = status.Id, status.Type } 

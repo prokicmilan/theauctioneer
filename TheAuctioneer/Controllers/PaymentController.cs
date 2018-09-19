@@ -15,7 +15,7 @@ namespace TheAuctioneer.Controllers
         private readonly TokenOrderBl _tokenOrderBl = new TokenOrderBl();
 
         // GET: Payment/Result
-        public HttpResponseMessage CentiliResponse(string userId, string status, string reference)
+        public HttpResponseMessage Get(string userId, string status, string reference)
         {
             var result = _tokenOrderBl.ProcessPayment(Guid.Parse(userId), Guid.Parse(reference), status);
             if (result == -1)

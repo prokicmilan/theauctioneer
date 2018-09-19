@@ -58,6 +58,7 @@
     <Compile Include="Models\Auction\CreateAuctionModel.cs" />
     <Compile Include="Models\Auction\DisplayAuctionModel.cs" />
     <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\TokenOrder\DisplayTokenOrderModel.cs" />
     <Compile Include="Models\User\BaseUserModel.cs" />
     <Compile Include="Models\User\CreateUserModel.cs" />
     <Compile Include="Models\User\DisplayUserModel.cs" />

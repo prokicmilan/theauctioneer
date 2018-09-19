@@ -297,6 +297,7 @@
     <Content Include="Views\Auctions\Index.cshtml" />
     <Content Include="Views\Auctions\Create.cshtml" />
     <Content Include="Views\Tokens\Buy.cshtml" />
+    <Content Include="Views\Tokens\TokenOrders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

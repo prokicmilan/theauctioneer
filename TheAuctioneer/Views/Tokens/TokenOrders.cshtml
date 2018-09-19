@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ViewModelLayer.Models.TokenOrder.DisplayTokenOrderModel>
+
+@{
+    ViewBag.Title = "TokenOrders";
+}
+
+<h2>My orders</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimestampCreated)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimestampChanged)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Amount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+        <td>
+            @item.TimestampCreated.Date.ToShortDateString()
+        </td>
+        <td>
+            @item.TimestampChanged.Date.ToShortDateString()
+        </td>
+    </tr>
+}
+
+</table>
