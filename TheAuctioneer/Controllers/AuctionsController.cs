@@ -40,7 +40,8 @@ namespace TheAuctioneer.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _auctionBl.CreateAuction(model);
+                    var userId = ((UserPrincipal)(HttpContext.User)).Id;
+                    _auctionBl.CreateAuction(model, userId);
                     return RedirectToAction("Index");
                 }
 
@@ -118,9 +119,12 @@ namespace TheAuctioneer.Controllers
                     TempData["ErrorMessage"] = "The auction has already expired.";
                     break;
                 case -2:
-                    TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
+                    TempData["ErrorMessage"] = "You are the owner of the auction.";
                     break;
                 case -3:
+                    TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
+                    break;
+                case -4:
                     TempData["ErrorMessage"] = "You're already the highest bidder on that auction.";
                     break;
             }
