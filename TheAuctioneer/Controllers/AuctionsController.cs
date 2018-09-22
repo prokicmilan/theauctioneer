@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using BusinessLogicLayer.Repositories;
 using Microsoft.AspNet.SignalR;
@@ -17,12 +18,31 @@ namespace TheAuctioneer.Controllers
 
         // GET: Auctions
         [AllowAnonymous]
-        public ActionResult Index(int? page)
+        public ActionResult Index(int? page, int? priceLow, int? priceHigh, int? itemsPerPage, string sortingOrder, string searchString)
         {
             var pageNumber = page ?? 1;
-            var models = _auctionBl.GetAllStarted().ToPagedList(pageNumber, 10);
+            // po defaultu sortiramo rastuce prema preostalom vremenu (prvo najskorije)
+            bool descending = false;
+            if (!String.IsNullOrEmpty(sortingOrder) && sortingOrder.Equals("Descending"))
+            {
+                descending = true;
+            }
+            var models = _auctionBl.GetAllStarted(priceLow, priceHigh, searchString);
+            if (descending)
+            {
+                models.Sort((x, y) => y.ExpiresAt.CompareTo(x.ExpiresAt));
+            }
+            else
+            {
+                models.Sort((x, y) => x.ExpiresAt.CompareTo(y.ExpiresAt));
+            }
+            if (itemsPerPage == null)
+            {
+                itemsPerPage = 10;
+            }
+            var pagedModels = models.ToPagedList(pageNumber, (int) itemsPerPage);
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
-            return View(models);
+            return View(pagedModels);
         }
 
         // GET: Auctions/Create

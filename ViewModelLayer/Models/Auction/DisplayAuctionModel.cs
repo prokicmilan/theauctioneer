@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace ViewModelLayer.Models.Auction
 {
@@ -16,6 +17,8 @@ namespace ViewModelLayer.Models.Auction
         public int M { get; set; }
 
         public int S { get; set; }
+
+        public DateTime ExpiresAt { get; set; }
 
     }
 }

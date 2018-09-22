@@ -25,8 +25,8 @@ namespace DataAccessLayer.Repositories
                                                 auction => auction.StatusId,                                          // strani kljuc
                                                 status => status.Id,                                                  // primarni kljuc
                                                 (auction, status) => new {Auction = auction, AuctionStatus = status}) // agregacija
-                                         .Where(status => status.AuctionStatus.Type.Equals("READY"))                  // where
-                                         .Select(auction => auction.Auction);                                         // select
+                                   .Where(status => status.AuctionStatus.Type.Equals("READY"))                        // where
+                                   .Select(auction => auction.Auction);                                               // select
         }
 
         public IQueryable<Auction> GetAllStarted()
@@ -49,6 +49,28 @@ namespace DataAccessLayer.Repositories
                                          (auction, status) => new { Auction = auction, AuctionStatus = status })
                                    .Where(status => status.AuctionStatus.Type.Equals("OPENED"))
                                    .Select(auction => auction.Auction);
+        }
+
+        public IQueryable<Auction> FilterStarted(int? priceLow, int? priceHigh, string searchString)
+        {
+            // dohvatamo sve pokrenute aukcije
+            var auctions = GetAllStarted();
+            if (priceLow != null)
+            {
+                // izdvajamo aukcije sa cenom vecom i jednakom minimumu
+                auctions = auctions.Where(auction => auction.Price >= priceLow);
+            }
+            if (priceHigh != null)
+            {
+                // izdvajamo aukcije sa cenom manjom i jednakom maksimumu
+                auctions = auctions.Where(auction => auction.Price <= priceHigh);
+            }
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                // izdvajamo aukcije sa imenom slicnim prosledjenom parametru za pretragu
+                auctions = auctions.Where(auction => auction.Name.Contains(searchString));
+            }
+            return auctions;
         }
 
         public IQueryable<Auction> GetAllWonByUser(Guid userId)

@@ -10,15 +10,41 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+@using (Html.BeginForm("Index", "Auctions", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-sm-2">
+            @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { placeholder = "Search", @class = "form-control mr-sm-2" })
+        </div>
+        <div class="col-sm-2">
+            <input type="number" name="priceLow" placeholder="Low price limit" class="form-control mr-sm-2" />
+        </div>
+        <div class="col-sm-2">
+            <input type="number" name="priceHigh" placeholder="High price limit" class="form-control mr-sm-2" />
+        </div>
+        <div class="col-sm-2">
+            <input type="number" name="itemsPerPage" placeholder="Items per page" class="form-control mr-sm-2" />
+        </div>
+        <div class="col-sm-2">
+            @Html.DropDownList("sortingOrder",
+                               new SelectList( new string[] { "Ascending", "Descending" }),
+                               "Sorting order",
+                               new { @class = "form-control" })
+        </div>
+        <button class="btn btn-success" type="submit">Search</button>
+        &nbsp;
+        <a href='@Url.Action("Index")' class="btn btn-primary" role="button">Reset</a>
+    </div>
+}
 @foreach (var item in Model)
 {
     <div class="col-md-4" style="padding: 10px;">
         <img src="@item.Image" class="img-responsive" style="height: 200px; width: 200px; margin: auto" />
-        <br/>
+        <br />
         <div class="text-center">
             @Html.ActionLink(item.Name, "Details", new { id = item.Id })
         </div>
-        <br/>
+        <br />
         <div class="text-center">
             @Html.LabelFor(modelItem => item.Price)
             <div id="P@(item.Id)">
@@ -41,13 +67,13 @@
                 <span class="seconds">@Html.DisplayFor(modelItem => item.S)</span>
             </div>
         </div>
-        <br/>
+        <br />
         @using (Html.BeginForm("Bid", "Auctions", FormMethod.Post))
         {
             @Html.AntiForgeryToken()
             <div class="form-actions no-color text-center">
                 @Html.Hidden("id", item.Id)
-                <input type="submit" value="Bid now!" class="btn btn-default" style="margin: auto; width: 100%"/>
+                <input type="submit" value="Bid now!" class="btn btn-default" style="margin: auto; width: 100%" />
             </div>
         }
     </div>
@@ -60,11 +86,11 @@
     <script src="/SignalR/hubs"></script>
     <script>
 
-        $.connection.hub.start().done(function() {});
+        $.connection.hub.start().done(function () { });
 
-        $(function() {
+        $(function () {
             var bidHub = $.connection.bidHub;
-            bidHub.client.UpdateAuction = function(id, price, username) {
+            bidHub.client.UpdateAuction = function (id, price, username) {
                 document.getElementById("P" + id).innerHTML = price;
                 document.getElementById("B" + id).innerHTML = username;
             }

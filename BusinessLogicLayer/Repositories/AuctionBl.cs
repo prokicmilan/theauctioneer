@@ -33,10 +33,10 @@ namespace BusinessLogicLayer.Repositories
             return models;
         }
 
-        public List<DisplayAuctionModel> GetAllStarted()
+        public List<DisplayAuctionModel> GetAllStarted(int? priceLow, int? priceHigh, string searchString)
         {
             MarkExpiredAsCompleted();
-            var auctions = _auctionRepository.GetAllStarted();
+            var auctions = _auctionRepository.FilterStarted(priceLow, priceHigh, searchString);
             var models = new List<DisplayAuctionModel>();
             foreach (var auction in auctions)
             {
@@ -182,6 +182,7 @@ namespace BusinessLogicLayer.Repositories
             model.H = timeLeft.Hours;
             model.M = timeLeft.Minutes;
             model.S = timeLeft.Seconds;
+            model.ExpiresAt = expiresAt;
 
             return model;
         }
