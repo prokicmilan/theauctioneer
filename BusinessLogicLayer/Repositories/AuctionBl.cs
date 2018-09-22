@@ -117,6 +117,7 @@ namespace BusinessLogicLayer.Repositories
                 auction.Price++;
                 var bid = new Bid
                 {
+                    Id = Guid.NewGuid(),
                     UserId = userId,
                     AuctionId = auctionId,
                     Timestamp = DateTime.Now,
