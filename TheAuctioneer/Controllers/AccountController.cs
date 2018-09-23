@@ -114,7 +114,7 @@ namespace TheAuctioneer.Controllers
                             string encryptedTicket = FormsAuthentication.Encrypt(authTicket);
                             var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
                             HttpContext.Response.Cookies.Add(authCookie);
-                            return RedirectToAction("Index", "Users");
+                            return RedirectToAction("Index", "Auctions");
                         case -1:
                             ModelState.AddModelError("Username", "Specified username is already taken.");
                             return View();

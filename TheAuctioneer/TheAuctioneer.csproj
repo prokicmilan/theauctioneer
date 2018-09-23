@@ -225,6 +225,7 @@
     <Compile Include="Controllers\AuctionsController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\PaymentController.cs" />
+    <Compile Include="Controllers\SystemParametersController.cs" />
     <Compile Include="Controllers\TokensController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
@@ -298,6 +299,8 @@
     <Content Include="Views\Auctions\Create.cshtml" />
     <Content Include="Views\Tokens\Buy.cshtml" />
     <Content Include="Views\Tokens\TokenOrders.cshtml" />
+    <Content Include="Views\SystemParameters\Index.cshtml" />
+    <Content Include="Views\SystemParameters\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
