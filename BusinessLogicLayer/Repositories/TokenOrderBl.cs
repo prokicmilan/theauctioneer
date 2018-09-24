@@ -33,7 +33,7 @@ namespace BusinessLogicLayer.Repositories
                     amount = Convert.ToInt32(_systemParameterRepository.GetByParameterName("P").ParameterValue);
                     break;
             }
-            var price = amount * 50;
+            var price = amount * Convert.ToInt32(_systemParameterRepository.GetByParameterName("T"));
             var orderId = Guid.NewGuid();
             var timestamp = DateTime.Now;
             TokenOrder order = new TokenOrder

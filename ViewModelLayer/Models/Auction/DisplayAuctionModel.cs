@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using ViewModelLayer.Models.Bid;
 
 namespace ViewModelLayer.Models.Auction
 {
@@ -20,5 +22,6 @@ namespace ViewModelLayer.Models.Auction
 
         public DateTime ExpiresAt { get; set; }
 
+        public List<DisplayBidModel> bids;
     }
 }

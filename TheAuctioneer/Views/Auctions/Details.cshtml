@@ -4,7 +4,7 @@
     ViewBag.Title = "Auction details";
 }
 
-<div>
+<div class="col-md-6">
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -46,6 +46,36 @@
             </div>
         }
     </dl>
+</div>
+<div class="col-md-6">
+    <h3>All bids</h3>
+    <table class="table">
+        <tr>
+            <th>
+                Posted by
+            </th>
+            <th>
+                Posted at
+            </th>
+            <th>
+                Amount
+            </th>
+        </tr>
+        @foreach (var bid in Model.bids)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => bid.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => bid.Timestamp)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => bid.BidAmount)
+                </td>
+            </tr>
+        }
+    </table>
 </div>
 <p>
     @Html.ActionLink("Back to List", "Index")

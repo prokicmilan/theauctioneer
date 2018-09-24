@@ -26,11 +26,14 @@
                     {
                         <li>@Html.ActionLink("Won auctions", "ListWon", "Auctions")</li>
                         <li>@Html.ActionLink("Orders list", "Index", "Tokens")</li>
+                        <li>@Html.ActionLink("My auctions", "My", "Auctions")</li>
+                        <li>@Html.ActionLink("Buy tokens", "Buy", "Tokens")</li>
                     }
                     
                     @if (HttpContext.Current.User.Identity.IsAuthenticated && HttpContext.Current.User.IsInRole("Admin"))
                     {
                         <li>@Html.ActionLink("Ready auctions", "ShowReady", "Auctions")</li>
+                        <li>@Html.ActionLink("System parameters", "Index", "SystemParameters")</li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")

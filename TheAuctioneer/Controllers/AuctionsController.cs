@@ -45,6 +45,13 @@ namespace TheAuctioneer.Controllers
             return View(pagedModels);
         }
 
+        // GET: Auctions/My
+        public ActionResult My()
+        {
+            var models = _auctionBl.GetAllCreatedByUser(((UserPrincipal) HttpContext.User).Id);
+            return View(models);
+        }
+
         // GET: Auctions/Create
         public ActionResult Create()
         {
@@ -142,10 +149,10 @@ namespace TheAuctioneer.Controllers
                     TempData["ErrorMessage"] = "You are the owner of the auction.";
                     break;
                 case -3:
-                    TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
+                    TempData["ErrorMessage"] = "You're already the highest bidder.";
                     break;
                 case -4:
-                    TempData["ErrorMessage"] = "You're already the highest bidder on that auction.";
+                    TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
                     break;
             }
             return RedirectToAction("Index");

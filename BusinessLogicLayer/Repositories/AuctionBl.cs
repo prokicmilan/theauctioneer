@@ -6,6 +6,7 @@ using System.Transactions;
 using DataAccessLayer.Classes;
 using DataAccessLayer.Repositories;
 using ViewModelLayer.Models.Auction;
+using ViewModelLayer.Models.Bid;
 
 namespace BusinessLogicLayer.Repositories
 {
@@ -47,6 +48,19 @@ namespace BusinessLogicLayer.Repositories
             return models;
         }
 
+        public List<DisplayAuctionModel> GetAllCreatedByUser(Guid userId)
+        {
+            var auctions = _auctionRepository.GetAllCreatedByUser(userId);
+            var models = new List<DisplayAuctionModel>();
+            foreach (var auction in auctions)
+            {
+                var model = InitDisplayAuctionModel(auction);
+                models.Add(model);
+            }
+
+            return models;
+        }
+
         public void CreateAuction(CreateAuctionModel model, Guid userId)
         {
             var auction = new Auction
@@ -68,7 +82,17 @@ namespace BusinessLogicLayer.Repositories
 
         public DisplayAuctionModel DisplayAuctionDetails(Guid id)
         {
-            return InitDisplayAuctionModel(_auctionRepository.GetById(id));
+            var model = InitDisplayAuctionModel(_auctionRepository.GetById(id));
+            var bids = _bidRepository.GetAllBidsForAuction(id);
+            model.bids = new List<DisplayBidModel>();
+            // gradimo listu licitacija na modelu za prikaz
+            foreach (var bid in bids)
+            {
+                model.bids.Add(InitBidModel(bid));
+            }
+            // sortiramo opadajuce po vremenu licitiranja (prvo najskorije)
+            model.bids.Sort((x, y) => y.Timestamp.CompareTo(x.Timestamp));
+            return model;
         }
 
         public void DeleteAuction(DisplayAuctionModel model)
@@ -183,6 +207,18 @@ namespace BusinessLogicLayer.Repositories
             model.M = timeLeft.Minutes;
             model.S = timeLeft.Seconds;
             model.ExpiresAt = expiresAt;
+
+            return model;
+        }
+
+        private DisplayBidModel InitBidModel(Bid bid)
+        {
+            var model = new DisplayBidModel
+            {
+                Username = _userRepository.GetById(bid.UserId).Username,
+                Timestamp = bid.Timestamp,
+                BidAmount = bid.BidAmount
+            };
 
             return model;
         }

@@ -112,5 +112,10 @@ namespace DataAccessLayer.Repositories
 
             return query;
         }
+
+        public IQueryable<Auction> GetAllCreatedByUser(Guid userId)
+        {
+            return context.Auctions.Where(auction => auction.UserId == userId);
+        }
     }
 }
