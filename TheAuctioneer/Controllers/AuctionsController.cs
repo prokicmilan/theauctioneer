@@ -16,10 +16,17 @@ namespace TheAuctioneer.Controllers
     {
         private readonly AuctionBl _auctionBl = new AuctionBl();
 
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         // GET: Auctions
         [AllowAnonymous]
         public ActionResult Index(int? page, int? priceLow, int? priceHigh, int? itemsPerPage, string sortingOrder, string searchString)
         {
+            logger.Debug("Index() --> page = " + page
+                                    + "priceLow = " + priceLow
+                                    + "priceHigh = " + priceHigh
+                                    + "sortingOrder = " + sortingOrder
+                                    + "searchString = " + searchString);
             var pageNumber = page ?? 1;
             // po defaultu sortiramo rastuce prema preostalom vremenu (prvo najskorije)
             bool descending = false;

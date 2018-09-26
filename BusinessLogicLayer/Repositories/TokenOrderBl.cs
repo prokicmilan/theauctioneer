@@ -33,7 +33,7 @@ namespace BusinessLogicLayer.Repositories
                     amount = Convert.ToInt32(_systemParameterRepository.GetByParameterName("P").ParameterValue);
                     break;
             }
-            var price = amount * Convert.ToInt32(_systemParameterRepository.GetByParameterName("T"));
+            var price = amount * Convert.ToInt32(_systemParameterRepository.GetByParameterName("T").ParameterValue);
             var orderId = Guid.NewGuid();
             var timestamp = DateTime.Now;
             TokenOrder order = new TokenOrder
@@ -69,7 +69,7 @@ namespace BusinessLogicLayer.Repositories
             return models;
         }
 
-        public int ProcessPayment(Guid userId, Guid orderId, string status)
+        public int ProcessPayment(Guid orderId, string status)
         {
             using (var tx = new TransactionScope())
             {
@@ -78,12 +78,6 @@ namespace BusinessLogicLayer.Repositories
                     var order = _tokenOrderRepository.GetById(orderId);
                     // nema narudzbine
                     if (order == null)
-                    {
-                        tx.Dispose();
-                        return -1;
-                    }
-                    // narudzbina je za drugog korisnika
-                    if (order.UserId != userId)
                     {
                         tx.Dispose();
                         return -1;
@@ -106,7 +100,7 @@ namespace BusinessLogicLayer.Repositories
                     // sve ok, dodajemo korisniku tokene
                     order.StatusId = _tokenOrderStatusRepository.GetByType("COMPLETED").Id;
                     order.TimestampChanged = DateTime.Now;
-                    var user = _userRepository.GetById(userId);
+                    var user = _userRepository.GetById(order.UserId);
                     user.TokenCount += order.Amount;
                     _tokenOrderRepository.Save(order);
                     _userRepository.Save(user);
