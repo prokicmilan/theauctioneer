@@ -12,9 +12,12 @@ namespace TheAuctioneer.Controllers
 
         private readonly TokenOrderBl _tokenOrderBl = new TokenOrderBl();
 
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         // GET: Tokens
         public ActionResult Index()
         {
+            logger.Info("");
             var model = _tokenOrderBl.GetAllOrdersByUser(((UserPrincipal)HttpContext.User).Id);
             model.Sort((x, y) => y.TimestampCreated.CompareTo(x.TimestampCreated));
             return View("TokenOrders", model);
@@ -23,6 +26,7 @@ namespace TheAuctioneer.Controllers
         // GET: Tokens/Buy
         public ActionResult Buy()
         {
+            logger.Info("");
             return View();
         }
         
@@ -31,9 +35,11 @@ namespace TheAuctioneer.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Buy(string type)
         {
+            logger.Info("type = " + type);
             // gadim se samom sebi
             if (!"goldsilverplatinum".Contains(type))
             {
+                logger.Error("Invalid type = " + type);
                 return View();
             }
             var userId = ((UserPrincipal)HttpContext.User).Id;

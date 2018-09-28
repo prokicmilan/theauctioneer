@@ -11,24 +11,13 @@ namespace TheAuctioneer.Controllers
     {
         private readonly AccountBl _accountBl = new AccountBl();
 
-        // GET: Users
-
-        public ActionResult Index(int? page)
-        {
-            ViewBag.ErrorMessage = TempData["ErrorMessage"];
-            var pageNumber = page ?? 1;
-            var models = _accountBl.DisplayUsers().ToPagedList(pageNumber, 2);
-            return View(models);
-        }
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // GET: Users/Details/5
         [AuthorizeSelf]
         public ActionResult Details(Guid id)
         {
-            if (((UserPrincipal)HttpContext.User).Id != id)
-            {
-                return RedirectToAction("Unauthorized", "Account");
-            }
+            logger.Info("id = " + id);
             var model = _accountBl.DisplayUserDetails(id);
             return View(model);
         }

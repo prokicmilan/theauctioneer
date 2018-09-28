@@ -15,12 +15,16 @@ namespace TheAuctioneer.Controllers
 
         private readonly AccountBl _accountBl = new AccountBl();
 
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         // GET: Login
         [Route]
         public ActionResult Index(string returnUrl = "")
         {
+            logger.Info("returnUrl = " + returnUrl);
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
+                logger.Info("User not authenticated, redirecting to login page.");
                 if (returnUrl.Length != 0)
                 {
                     TempData["ReturnUrl"] = returnUrl;
@@ -43,6 +47,7 @@ namespace TheAuctioneer.Controllers
                 {
                     if (_accountBl.CheckCredentials(model.Username, model.Password))
                     {
+                        logger.Info("Valid credentials, logging in.");
                         var sessionModel = _accountBl.CreateSessionModel(model);
                         HttpContext.User = new UserPrincipal(sessionModel);
                         // TODO: cookie?
@@ -64,21 +69,23 @@ namespace TheAuctioneer.Controllers
                         }
                         return RedirectToAction("Index", "Auctions");
                     }
-
+                    logger.Info("Invalid credentials for user " + model.Username);
                     ViewBag.ErrorMessage = "Invalid credentials.";
                     return View("Login");
                 }
-
+                logger.Info("Invalid model state.");
                 return View("Login");
             }
-            catch
+            catch (Exception e)
             {
+                logger.Error("Exception occured, redirecting to login." + e.Message);
                 return View("Login");
             }
         }
 
         public ActionResult Register()
         {
+            logger.Info("");
             return View();
         }
 
@@ -95,6 +102,7 @@ namespace TheAuctioneer.Controllers
                     switch (retVal)
                     {
                         case 0:
+                            logger.Info("User created. Username = " + model.Username);
                             var sessionUser = _accountBl.CreateSessionModel(new LoginUserModel
                             {
                                 Username = model.Username,
@@ -116,17 +124,21 @@ namespace TheAuctioneer.Controllers
                             HttpContext.Response.Cookies.Add(authCookie);
                             return RedirectToAction("Index", "Auctions");
                         case -1:
+                            logger.Info("Username " + model.Username + " already exists.");
                             ModelState.AddModelError("Username", "Specified username is already taken.");
                             return View();
                         case -2:
+                            logger.Info("Email " + model.Email + " already exists.");
                             ModelState.AddModelError("Email", "Specified email address already exists in the system.");
                             return View();
                     }
                 }
+                logger.Info("Invalid model state.");
                 return View();
             }
-            catch
+            catch (Exception e)
             {
+                logger.Error("Exception occured, redirecting to registration page." + e.Message);
                 return View();
             }
         }
@@ -134,6 +146,7 @@ namespace TheAuctioneer.Controllers
         // GET: /Account/Details/5
         public ActionResult Details(Guid id)
         {
+            logger.Info("id = " + id);
             var model = _accountBl.DisplayUserDetails(id);
             return View(model);
         }
@@ -144,8 +157,7 @@ namespace TheAuctioneer.Controllers
         [AuthorizeUser]
         public ActionResult LogOff()
         {
-            //Session["UserSession"] = null;
-            Session.Abandon();
+            logger.Info(((UserPrincipal)HttpContext.User).Username);
             FormsAuthentication.SignOut();
             return RedirectToAction("Index");
         }
@@ -154,6 +166,7 @@ namespace TheAuctioneer.Controllers
         [AuthorizeSelf]
         public ActionResult Edit(Guid id)
         {
+            logger.Info("id = " + id);
             var model = _accountBl.DisplayUserDetails(id);
             return View(model);
         }
@@ -171,11 +184,12 @@ namespace TheAuctioneer.Controllers
                     _accountBl.ChangeUserDetails(model);
                     return RedirectToAction("Index", "Users");
                 }
-
+                logger.Info("Model state invalid");
                 return View();
             }
-            catch
+            catch (Exception e)
             {
+                logger.Error("Exception occured, redirecting to edit page. " + e.Message);
                 return View();
             }
         }
@@ -184,6 +198,7 @@ namespace TheAuctioneer.Controllers
         // GET: Account/ChangePassword/5
         public ActionResult ChangePassword(Guid id)
         {
+            logger.Info("id = " + id);
             return View();
         }
 
@@ -199,16 +214,19 @@ namespace TheAuctioneer.Controllers
                 {
                     if (_accountBl.ChangePassword(model))
                     {
+                        logger.Info("Password changed id = " + model.Id);
                         return RedirectToAction("Index", "Users");
                     }
+                    logger.Info("Password invalid, id = " + model.Id);
                     ModelState.AddModelError("OldPassword", "Password is invalid.");
                     return View();
                 }
-
+                logger.Info("Model state invalid.");
                 return View();
             }
-            catch
+            catch (Exception e)
             {
+                logger.Error("Exception occured, redirecting to password change page. " + e.Message);
                 return View();
             }
         }

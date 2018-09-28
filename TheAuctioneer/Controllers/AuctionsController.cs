@@ -22,11 +22,11 @@ namespace TheAuctioneer.Controllers
         [AllowAnonymous]
         public ActionResult Index(int? page, int? priceLow, int? priceHigh, int? itemsPerPage, string sortingOrder, string searchString)
         {
-            logger.Debug("Index() --> page = " + page
-                                    + "priceLow = " + priceLow
-                                    + "priceHigh = " + priceHigh
-                                    + "sortingOrder = " + sortingOrder
-                                    + "searchString = " + searchString);
+            logger.Info("page = " + page
+                         + "priceLow = " + priceLow
+                         + "priceHigh = " + priceHigh
+                         + "sortingOrder = " + sortingOrder
+                         + "searchString = " + searchString);
             var pageNumber = page ?? 1;
             // po defaultu sortiramo rastuce prema preostalom vremenu (prvo najskorije)
             bool descending = false;
@@ -55,6 +55,7 @@ namespace TheAuctioneer.Controllers
         // GET: Auctions/My
         public ActionResult My()
         {
+            logger.Info("");
             var models = _auctionBl.GetAllCreatedByUser(((UserPrincipal) HttpContext.User).Id);
             return View(models);
         }
@@ -62,6 +63,7 @@ namespace TheAuctioneer.Controllers
         // GET: Auctions/Create
         public ActionResult Create()
         {
+            logger.Info("");
             return View();
         }
 
@@ -78,11 +80,12 @@ namespace TheAuctioneer.Controllers
                     _auctionBl.CreateAuction(model, userId);
                     return RedirectToAction("Index");
                 }
-
+                logger.Info("Model state invalid.");
                 return View();
             }
-            catch
+            catch (Exception e) 
             {
+                logger.Info("Exception occured, redirecting to create auction page. " + e.Message);
                 return View();
             }
         }
@@ -91,6 +94,7 @@ namespace TheAuctioneer.Controllers
         [AuthorizeUser(RolesAllowed = "Admin")]
         public ActionResult ShowReady()
         {
+            logger.Info("");
             var models = _auctionBl.GetAllReady();
             return View(models);
         }
@@ -98,6 +102,7 @@ namespace TheAuctioneer.Controllers
         // GET: Auctions/Details/5
         public ActionResult Details(Guid id)
         {
+            logger.Info("id = " + id);
             var model = _auctionBl.DisplayAuctionDetails(id);
             return View(model);
         }
@@ -106,6 +111,7 @@ namespace TheAuctioneer.Controllers
         [AuthorizeUser(RolesAllowed = "Admin")]
         public ActionResult Delete(Guid id)
         {
+            logger.Info("id = " + id);
             var model = _auctionBl.DisplayAuctionDetails(id);
             return View(model);
         }
@@ -116,6 +122,7 @@ namespace TheAuctioneer.Controllers
         [AuthorizeUser(RolesAllowed = "Admin")]
         public ActionResult Delete(DisplayAuctionModel model)
         {
+            logger.Info("Deleting auction " + model.Id);
             _auctionBl.DeleteAuction(model);
             return RedirectToAction("ShowReady");
         }
@@ -134,6 +141,7 @@ namespace TheAuctioneer.Controllers
         [AuthorizeUser(RolesAllowed = "Admin")]
         public ActionResult Start(DisplayAuctionModel model)
         {
+            logger.Info("Starting auction " + model.Id);
             _auctionBl.StartAuction(model);
             return RedirectToAction("ShowReady");
         }
@@ -141,24 +149,30 @@ namespace TheAuctioneer.Controllers
         [HttpPost]
         public ActionResult Bid(Guid id)
         {
+            logger.Info("id = " + id);
             var retVal = _auctionBl.PostBid(id, ((UserPrincipal) HttpContext.User).Id);
             switch (retVal)
             {
                 case 0:
+                    logger.Info("Bid successful");
                     var hubContext = GlobalHost.ConnectionManager.GetHubContext<BidHub>();
                     var price = _auctionBl.GetAuctionPrice(id);
                     hubContext.Clients.All.UpdateAuction(id, price, ((UserPrincipal) HttpContext.User).Username);
                     return Redirect(Request.UrlReferrer.ToString());
                 case -1:
+                    logger.Info("Auction expired.");
                     TempData["ErrorMessage"] = "The auction has already expired.";
                     break;
                 case -2:
+                    logger.Info("User is the owner.");
                     TempData["ErrorMessage"] = "You are the owner of the auction.";
                     break;
                 case -3:
+                    logger.Info("User is the highest bidder.");
                     TempData["ErrorMessage"] = "You're already the highest bidder.";
                     break;
                 case -4:
+                    logger.Info("User doesn't have enough tokens.");
                     TempData["ErrorMessage"] = "You don't have enough tokens to make that bid.";
                     break;
             }
@@ -167,6 +181,7 @@ namespace TheAuctioneer.Controllers
 
         public ActionResult ListWon()
         {
+            logger.Info("");
             var models = _auctionBl.GetAllWonByUser(((UserPrincipal) HttpContext.User).Id);
             return View("ShowReady", models);
         }

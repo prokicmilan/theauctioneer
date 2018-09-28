@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using BusinessLogicLayer.Repositories;
+using TheAuctioneer.Principals;
 using ViewModelLayer.Models.User;
 
 namespace TheAuctioneer.Attributes
@@ -12,6 +13,8 @@ namespace TheAuctioneer.Attributes
     internal class AuthorizeUser : AuthorizeAttribute
     {
         private readonly AccountBl _accountBl = new AccountBl();
+
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string RolesAllowed { get; set; }
 
@@ -35,6 +38,7 @@ namespace TheAuctioneer.Attributes
         {
             if (filterContext.HttpContext.User.Identity.IsAuthenticated)
             {
+                logger.Info("Unauthorized acces by authenticated user, username = " + ((UserPrincipal)(filterContext.HttpContext.User)).Username);
                 filterContext.Result = new RedirectToRouteResult(
                         new RouteValueDictionary(
                             new
@@ -47,6 +51,7 @@ namespace TheAuctioneer.Attributes
             }
             else
             {
+                logger.Info("Unauthorized access by anonymous user.");
                 var returl = "";
                 if (filterContext.HttpContext.Request.HttpMethod.Equals("GET"))
                 {
