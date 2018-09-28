@@ -34,6 +34,10 @@ namespace BusinessLogicLayer.Repositories
         public UserSessionModel CreateSessionModel(LoginUserModel model)
         {
             var user = _userRepository.SearchByUsername(model.Username);
+            if (user == null)
+            {
+                user = _userRepository.SearchByEmail(model.Username);
+            }
             return new UserSessionModel
             {
                 Id = user.Id,
@@ -88,7 +92,11 @@ namespace BusinessLogicLayer.Repositories
             {
                 return CheckPassword(user.Password, password);
             }
-
+            user = _userRepository.SearchByEmail(username);
+            if (user != null)
+            {
+                return CheckPassword(user.Password, password);
+            }
             return false;
         }
 
