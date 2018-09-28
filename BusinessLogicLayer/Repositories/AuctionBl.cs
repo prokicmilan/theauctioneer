@@ -114,56 +114,65 @@ namespace BusinessLogicLayer.Repositories
         {
             using (var tx = new TransactionScope())
             {
-                MarkExpiredAsCompleted();
-                var auction = _auctionRepository.GetById(auctionId);
-                if (auction.ExpiresAt <= DateTime.Now)
+                try
                 {
-                    // aukcija se vec zavrsila
+                    MarkExpiredAsCompleted();
+                    var auction = _auctionRepository.GetById(auctionId);
+                    if (auction.ExpiresAt <= DateTime.Now)
+                    {
+                        // aukcija se vec zavrsila
+                        tx.Complete();
+                        return -1;
+                    }
+                    if (auction.UserId == userId)
+                    {
+                        // korisnik je vlasnik aukcije
+                        tx.Complete();
+                        return -2;
+                    }
+                    var oldBid = _bidRepository.GetTopBidForAuction(auctionId);
+                    if (oldBid != null && oldBid.UserId == userId)
+                    {
+                        // korisnik vec vodi na licitaciji
+                        tx.Dispose();
+                        return -3;
+                    }
+                    var user = _userRepository.GetById(userId);
+                    if ((user.TokenCount - (auction.Price)) < 0)
+                    {
+                        // korisnik nema dovoljno sredstava za licitiranje na datoj aukciji
+                        tx.Dispose();
+                        return -4;
+                    }
+
+                    if (oldBid != null)
+                    {
+                        var oldUser = _userRepository.GetById(oldBid.UserId);
+                        oldUser.TokenCount += oldBid.BidAmount;
+                        _userRepository.Save(oldUser);
+                    }
+                    auction.Price++;
+                    var bid = new Bid
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = userId,
+                        AuctionId = auctionId,
+                        Timestamp = DateTime.Now,
+                        BidAmount = auction.Price
+                    };
+                    _bidRepository.Save(bid);
+                    _auctionRepository.Save(auction);
+                    user.TokenCount -= auction.Price;
+                    _userRepository.Save(user);
                     tx.Complete();
-                    return -1;
+                    return 0;
                 }
-                if (auction.UserId == userId)
+                catch
                 {
-                    // korisnik je vlasnik aukcije
-                    tx.Complete();
-                    return -2;
-                }
-                var oldBid = _bidRepository.GetTopBidForAuction(auctionId);
-                if (oldBid != null && oldBid.UserId == userId)
-                {
-                    // korisnik vec vodi na licitaciji
+                    // doslo je do izuzetka, vracamo -5
                     tx.Dispose();
-                    return -3;
+                    return -5;
                 }
-                var user = _userRepository.GetById(userId);
-                if ((user.TokenCount - (auction.Price)) < 0)
-                {
-                    // korisnik nema dovoljno sredstava za licitiranje na datoj aukciji
-                    tx.Dispose();
-                    return -4;
-                }
-                
-                if (oldBid != null)
-                {
-                    var oldUser = _userRepository.GetById(oldBid.UserId);
-                    oldUser.TokenCount += oldBid.BidAmount;
-                    _userRepository.Save(oldUser);
-                }
-                auction.Price++;
-                var bid = new Bid
-                {
-                    Id = Guid.NewGuid(),
-                    UserId = userId,
-                    AuctionId = auctionId,
-                    Timestamp = DateTime.Now,
-                    BidAmount = auction.Price
-                };
-                _bidRepository.Save(bid);
-                _auctionRepository.Save(auction);
-                user.TokenCount -= auction.Price;
-                _userRepository.Save(user);
-                tx.Complete();
-                return 0;
             }
         }
 
